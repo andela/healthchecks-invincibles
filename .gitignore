@@ -8,7 +8,16 @@ static-collected
 
 .DS_Store
 static/.DS_Store
+<<<<<<< HEAD
 .vscode/
 hc-venv/
 healthchecks-venv/
 .idea/
+=======
+.idea/
+.idea/healthchecks-invincibles.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+solution.py
+>>>>>>> test(userModel): test to update user
