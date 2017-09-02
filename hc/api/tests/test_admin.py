@@ -10,6 +10,8 @@ class ApiAdminTestCase(BaseTestCase):
         self.check = Check.objects.create(user=self.alice, tags="foo bar")
 
     def test_set_alice_as_superuser_and_staff(self):
+        """Update user permission to superuser and staff"""
+
         User.objects.filter(username=self.alice).update(is_superuser=True, is_staff=True)
         self.alice = User.objects.get(id=self.alice.id)
         self.assertEqual(self.alice.is_superuser, True)
