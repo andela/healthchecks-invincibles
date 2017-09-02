@@ -1,5 +1,8 @@
 # healthchecks
 
+[![Build Status](https://travis-ci.org/andela/healthchecks-invincibles.svg?branch=master)](https://travis-ci.org/andela/healthchecks-invincibles)
+[![Coverage Status](https://coveralls.io/repos/github/andela/healthchecks-invincibles/badge.svg?branch=master)](https://coveralls.io/github/andela/healthchecks-invincibles?branch=master)
+
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
 ![Screenshot of My Checks page](/stuff/screenshots/my_checks.png?raw=true "My Checks Page")
@@ -36,7 +39,7 @@ in development environment.
 
 * check out project code:
 
-        $ git clone https://github.com/healthchecks/healthchecks.git
+        $ git clone https://github.com/andela/healthchecks-invincibles.git
 
 * install requirements (Django, ...) into virtualenv:
 
@@ -59,9 +62,9 @@ in development environment.
 
         $ ./manage.py runserver
 
-The site should now be running at `http://localhost:8080`
+The site should now be running at `http://localhost:8000`
 To log into Django administration site as a super user,
-visit `http://localhost:8080/admin`
+visit `http://localhost:8000/admin`
 
 ## Database Configuration
 
