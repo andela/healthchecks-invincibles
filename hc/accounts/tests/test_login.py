@@ -32,8 +32,7 @@ class LoginTestCase(TestCase):
         assert "To log into healthchecks.io" in mail.outbox[0].body
 
         ### Assert that check is associated with the new user
-        # user = User.objects.get(email="alice@example.org")
-        # print(r.context)
+
 
     def test_it_pops_bad_link_from_session(self):
         self.client.session["bad_link"] = True
