@@ -58,76 +58,61 @@ class CreateCheckTestCase(BaseTestCase):
         self.assertEqual(r.status_code, 201)
 
     def test_it_handles_missing_request_body(self):
-<<<<<<< HEAD
-
-        """Make the post request with a missing body and get the response"""
-        r = self.client.post(self.URL, content_type="application/json")
-        string_content = r.content.decode("utf-8")
-        json_content = json.loads(string_content)
-        self.assertEqual(r.status_code, 400)
-
-        self.assertEqual(json_content.get("error"), "wrong api_key")
 =======
+
         """Make the post request with a missing body and get the response"""
         r = self.client.post(self.URL, content_type="application/json")
-        content = json.loads(r.content)
+        json_content = json.loads(r.content)
         self.assertEqual(r.status_code, 400)
-        self.assertEqual(content["error"], "wrong api_key")
->>>>>>> test(createCheck): test create check
+
+        self.assertEqual(json_content["error"], "wrong api_key")
 
     def test_it_handles_invalid_json(self):
         """Make the post request with invalid json data type"""
         r = self.client.post(self.URL, "invalid data", content_type="application/json")
-<<<<<<< HEAD
-        string_content = r.content.decode("utf-8")
-        json_content = json.loads(string_content)
-        self.assertEqual(r.status_code, 400)
-        self.assertEqual(json_content.get("error"), "could not parse request body")
-=======
         content = json.loads(r.content)
         self.assertEqual(r.status_code, 400)
         self.assertEqual(content["error"], "could not parse request body")
+=======
+        json_content = json.loads(r.content)
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(json_content["error"], "could not parse request body")
 >>>>>>> test(createCheck): test create check
 
     def test_it_rejects_wrong_api_key(self):
         """Assertion for wrong API key"""
         r = self.post({"api_key": "wrong"},
                   expected_error="wrong api_key")
-<<<<<<< HEAD
-        string_content = r.content.decode("utf-8")
-        json_content = json.loads(string_content)
-        self.assertEqual(json_content.get("error"), "wrong api_key")
-=======
         content = json.loads(r.content)
         self.assertEqual(content["error"], "wrong api_key")
+=======
+        json_content = json.loads(r.content)
+        self.assertEqual(json_content["error"], "wrong api_key")
 >>>>>>> test(createCheck): test create check
 
     def test_it_rejects_non_number_timeout(self):
         """reject non number timeout"""
         r = self.post({"api_key": "abc", "timeout": "oops"},
                   expected_error="timeout is not a number")
-<<<<<<< HEAD
-        string_content = r.content.decode("utf-8")
-        json_content = json.loads(string_content)
-        self.assertEqual(json_content.get("error"), "timeout is not a number")
-=======
         content = json.loads(r.content)
         self.assertEqual(content["error"], "timeout is not a number")
+=======
+        json_content = json.loads(r.content)
+        self.assertEqual(json_content["error"], "timeout is not a number")
 >>>>>>> test(createCheck): test create check
 
     def test_it_rejects_non_string_name(self):
         """test to reject a non string name"""
         r = self.post({"api_key": "abc", "name": False},
                   expected_error="name is not a string")
-<<<<<<< HEAD
-        string_content = r.content.decode("utf-8")
-        json_content = json.loads(string_content)
-        self.assertEqual(json_content.get("error"), "name is not a string")
-=======
         content = json.loads(r.content)
         self.assertEqual(content["error"], "name is not a string")
->>>>>>> test(createCheck): test create check
 
+=======
+        json_content = json.loads(r.content)
+        self.assertEqual(json_content["error"], "name is not a string")
+
+>>>>>>> test(createCheck): test create check
     def test_it_assigns_channels(self):
         """Test for the assignment of channels"""
         r = self.post({
@@ -147,15 +132,14 @@ class CreateCheckTestCase(BaseTestCase):
             "tags": "bar,baz",
             "timeout": 1,
             "grace": 60})
-<<<<<<< HEAD
-        string_content = r.content.decode("utf-8")
-        json_content = json.loads(string_content)
-        self.assertEqual(json_content.get("error"), "timeout is too small")
-=======
         content = json.loads(r.content)
         self.assertEqual(content["error"], "timeout is too small")
->>>>>>> test(createCheck): test create check
 
+=======
+        json_content = json.loads(r.content)
+        self.assertEqual(json_content["error"], "timeout is too small")
+
+>>>>>>> test(createCheck): test create check
     def test_timeout_is_too_large(self):
         """Test for the timeout is too large"""
         r = self.post({
@@ -164,11 +148,10 @@ class CreateCheckTestCase(BaseTestCase):
             "tags": "bar,baz",
             "timeout": 720000,
             "grace": 60})
-<<<<<<< HEAD
-        string_content = r.content.decode("utf-8")
-        json_content = json.loads(string_content)
-        self.assertEqual(json_content.get("error"), "timeout is too large")
-=======
         content = json.loads(r.content)
         self.assertEqual(content["error"], "timeout is too large")
+=======
+        json_content = json.loads(r.content)
+        self.assertEqual(json_content["error"], "timeout is too large")
+
 >>>>>>> test(createCheck): test create check

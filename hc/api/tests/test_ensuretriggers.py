@@ -20,10 +20,11 @@ class EnsureTriggersTestCase(TestCase):
         check.save()
         check.refresh_from_db()
         assert check.alert_after is not None
-        
+
         alert_after = check.alert_after
+        print(alert_after)
         check.last_ping += timedelta(days=1)
         check.save()
+        print(check.alert_after)
         check.refresh_from_db()
         self.assertLess(alert_after, check.alert_after)
-        
