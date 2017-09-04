@@ -64,35 +64,35 @@ class CreateCheckTestCase(BaseTestCase):
         json_content = json.loads(r.content)
         self.assertEqual(r.status_code, 400)
        
-        self.assertEqual(json_content["error"], "wrong api_key")
+        self.assertEqual(json_content.get("error"), "wrong api_key")
 
     def test_it_handles_invalid_json(self):
         """Make the post request with invalid json data type"""
         r = self.client.post(self.URL, "invalid data", content_type="application/json")
         json_content = json.loads(r.content)
         self.assertEqual(r.status_code, 400)
-        self.assertEqual(json_content["error"], "could not parse request body")
+        self.assertEqual(json_content.get("error"), "could not parse request body")
 
     def test_it_rejects_wrong_api_key(self):
         """Assertion for wrong API key"""
         r = self.post({"api_key": "wrong"},
                   expected_error="wrong api_key")
         json_content = json.loads(r.content)
-        self.assertEqual(json_content["error"], "wrong api_key")
+        self.assertEqual(json_content.get("error"), "wrong api_key")
 
     def test_it_rejects_non_number_timeout(self):
         """reject non number timeout"""
         r = self.post({"api_key": "abc", "timeout": "oops"},
                   expected_error="timeout is not a number")
         json_content = json.loads(r.content)
-        self.assertEqual(json_content["error"], "timeout is not a number")
+        self.assertEqual(json_content.get("error"), "timeout is not a number")
 
     def test_it_rejects_non_string_name(self):
         """test to reject a non string name"""
         r = self.post({"api_key": "abc", "name": False},
                   expected_error="name is not a string")
         json_content = json.loads(r.content)
-        self.assertEqual(json_content["error"], "name is not a string")
+        self.assertEqual(json_content.get("error"), "name is not a string")
         
     def test_it_assigns_channels(self):
         """Test for the assignment of channels"""
@@ -114,7 +114,7 @@ class CreateCheckTestCase(BaseTestCase):
             "timeout": 1,
             "grace": 60})
         json_content = json.loads(r.content)
-        self.assertEqual(json_content["error"], "timeout is too small")
+        self.assertEqual(json_content.get("error"), "timeout is too small")
         
     def test_timeout_is_too_large(self):
         """Test for the timeout is too large"""
@@ -125,5 +125,5 @@ class CreateCheckTestCase(BaseTestCase):
             "timeout": 720000,
             "grace": 60})
         json_content = json.loads(r.content)
-        self.assertEqual(json_content["error"], "timeout is too large")
+        self.assertEqual(json_content.get("error"), "timeout is too large")
 
