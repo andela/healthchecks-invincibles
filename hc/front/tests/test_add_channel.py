@@ -38,7 +38,15 @@ class AddChannelTestCase(BaseTestCase):
             self.assertContains(r, "Integration Settings", status_code=200)
 
     ### Test that the team access works
-    
+    def test_team_access_works(self):
+        url = "/integrations/add/"
+        form = {"kind": "email", "value": "alice@example.org"}
+
+        self.client.login(username="bob@example.org", password="password")
+        r = self.client.post(url, form)
+
+        self.assertRedirects(r, "/integrations/")
+        assert Channel.objects.count() == 1
 
     ### Test that bad kinds don't work
     def test_it_fails_on_bad_channel_kind(self):
