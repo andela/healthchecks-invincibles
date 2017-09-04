@@ -10,3 +10,4 @@ static/.DS_Store
 
 .vscode/
 hc-venv/
+healthchecks-venv/
