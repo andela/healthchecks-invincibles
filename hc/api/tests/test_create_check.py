@@ -16,8 +16,9 @@ class CreateCheckTestCase(BaseTestCase):
                              content_type="application/json")
 
         if expected_error:
-            content = json.loads(r.content)
-            response_error = content.get("error")
+            string_content = r.content.decode("utf-8")
+            json_content = json.loads(string_content)
+            response_error = json_content.get("error")
             self.assertEqual(r.status_code, 400)
             self.assertIn(expected_error, response_error)
 
@@ -61,7 +62,8 @@ class CreateCheckTestCase(BaseTestCase):
 
         """Make the post request with a missing body and get the response"""
         r = self.client.post(self.URL, content_type="application/json")
-        json_content = json.loads(r.content)
+        string_content = r.content.decode("utf-8")
+        json_content = json.loads(string_content)
         self.assertEqual(r.status_code, 400)
 
         self.assertEqual(json_content.get("error"), "wrong api_key")
@@ -69,11 +71,8 @@ class CreateCheckTestCase(BaseTestCase):
     def test_it_handles_invalid_json(self):
         """Make the post request with invalid json data type"""
         r = self.client.post(self.URL, "invalid data", content_type="application/json")
-        content = json.loads(r.content)
-        self.assertEqual(r.status_code, 400)
-        self.assertEqual(content["error"], "could not parse request body")
-
-        json_content = json.loads(r.content)
+        string_content = r.content.decode("utf-8")
+        json_content = json.loads(string_content)
         self.assertEqual(r.status_code, 400)
         self.assertEqual(json_content.get("error"), "could not parse request body")
 
@@ -81,30 +80,24 @@ class CreateCheckTestCase(BaseTestCase):
         """Assertion for wrong API key"""
         r = self.post({"api_key": "wrong"},
                   expected_error="wrong api_key")
-        content = json.loads(r.content)
-        self.assertEqual(content["error"], "wrong api_key")
-
-        json_content = json.loads(r.content)
+        string_content = r.content.decode("utf-8")
+        json_content = json.loads(string_content)
         self.assertEqual(json_content.get("error"), "wrong api_key")
 
     def test_it_rejects_non_number_timeout(self):
         """reject non number timeout"""
         r = self.post({"api_key": "abc", "timeout": "oops"},
                   expected_error="timeout is not a number")
-        content = json.loads(r.content)
-        self.assertEqual(content["error"], "timeout is not a number")
-
-        json_content = json.loads(r.content)
+        string_content = r.content.decode("utf-8")
+        json_content = json.loads(string_content)
         self.assertEqual(json_content.get("error"), "timeout is not a number")
 
     def test_it_rejects_non_string_name(self):
         """test to reject a non string name"""
         r = self.post({"api_key": "abc", "name": False},
                   expected_error="name is not a string")
-        content = json.loads(r.content)
-        self.assertEqual(content["error"], "name is not a string")
-
-        json_content = json.loads(r.content)
+        string_content = r.content.decode("utf-8")
+        json_content = json.loads(string_content)
         self.assertEqual(json_content.get("error"), "name is not a string")
 
     def test_it_assigns_channels(self):
@@ -126,10 +119,8 @@ class CreateCheckTestCase(BaseTestCase):
             "tags": "bar,baz",
             "timeout": 1,
             "grace": 60})
-        content = json.loads(r.content)
-        self.assertEqual(content["error"], "timeout is too small")
-
-        json_content = json.loads(r.content)
+        string_content = r.content.decode("utf-8")
+        json_content = json.loads(string_content)
         self.assertEqual(json_content.get("error"), "timeout is too small")
 
     def test_timeout_is_too_large(self):
@@ -140,7 +131,6 @@ class CreateCheckTestCase(BaseTestCase):
             "tags": "bar,baz",
             "timeout": 720000,
             "grace": 60})
-        content = json.loads(r.content)
-        self.assertEqual(content["error"], "timeout is too large")
-        json_content = json.loads(r.content)
+        string_content = r.content.decode("utf-8")
+        json_content = json.loads(string_content)
         self.assertEqual(json_content.get("error"), "timeout is too large")
