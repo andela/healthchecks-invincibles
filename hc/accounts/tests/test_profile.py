@@ -6,9 +6,7 @@ from hc.api.models import Check
 
 
 class ProfileTestCase(BaseTestCase):
-    """
-    Test functionality in profile view
-    """
+    """Test functionality in profile view"""
     def test_it_sends_set_password_link(self):
         # tests whether an email is containing the reset password link when set password is chosen
         self.client.login(username="alice@example.org", password="password")

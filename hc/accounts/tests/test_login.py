@@ -20,7 +20,7 @@ class LoginTestCase(TestCase):
         session.save()
 
         form = {"email": "alice@example.org"}
-        # Assert, after login, it should redirect to checks
+        # Assert that it should redirect to checks after login
         response = self.client.post("/accounts/login/", form)
         assert response.status_code == 302
 
