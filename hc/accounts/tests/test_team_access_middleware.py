@@ -17,5 +17,5 @@ class TeamAccessMiddlewareTestCase(TestCase):
         self.assertEqual(str(Profile.objects.get(user=user.id)), "ned@example.org")
         #  Assert if new user can log in
         self.client.login(username="ned@example.org", password="password")
-        r = self.client.get("/about/")
-        self.assertEqual(r.status_code, 200)
+        response = self.client.get("/about/")
+        self.assertEqual(response.status_code, 200)
