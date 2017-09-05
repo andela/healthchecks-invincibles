@@ -69,7 +69,7 @@ class NotifyTestCase(BaseTestCase):
     def test_webhooks_dollarsign_escaping(self, mock_get):
         # If name or tag contains what looks like a variable reference,
         # that should be left alone:
-        
+
 
         template = "http://host/$NAME"
         self._setup_data("webhook", template)
