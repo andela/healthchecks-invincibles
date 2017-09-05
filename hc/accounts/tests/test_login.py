@@ -9,7 +9,7 @@ class LoginTestCase(TestCase):
     def test_it_sends_link(self):
         check = Check()
         check.save()
-        
+        old_code = check.code
 
         session = self.client.session
         session["welcome_code"] = str(check.code)
@@ -32,6 +32,8 @@ class LoginTestCase(TestCase):
         assert "To log into healthchecks.io" in mail.outbox[0].body
 
         ### Assert that check is associated with the new user
+        self.assertTrue(Check.objects.get(user_id=user.id))
+        self.assertEqual(old_code, Check.objects.get(user_id=user.id).code)
 
 
     def test_it_pops_bad_link_from_session(self):

@@ -14,7 +14,6 @@ class SwitchTeamTestCase(BaseTestCase):
         r = self.client.get(url, follow=True)
 
         ### Assert the contents of r
-        print (r.context['checks'][0].__dict__)
         self.assertEqual(r.context['checks'][0].name, "This belongs to Alice")
 
 
