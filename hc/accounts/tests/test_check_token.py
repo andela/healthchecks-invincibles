@@ -26,6 +26,8 @@ class CheckTokenTestCase(BaseTestCase):
 
     def test_check_redirect_when_logged_in(self):
         # Login and test it redirects already logged in
+        form = {"email": "alice@example.org", "password": "password"}
+        self.client.post("/accounts/login/", form)
         response = self.client.post("/accounts/check_token/alice/secret-token/")
         self.assertRedirects(response, "/checks/")
 
