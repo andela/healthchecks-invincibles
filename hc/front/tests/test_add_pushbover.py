@@ -40,14 +40,14 @@ class AddPushoverTestCase(BaseTestCase):
     def test_pushover_validates_invalid_priority(self):
         """
         Test to validate that if the passed priority value is not between -2 to 2,
-        it should fail with a BadRequestError 
+        it should fail with a BadRequestError
         """
         # Login Alice
         self.client.login(username="alice@example.org", password="password")
 
         # Initiate a session
         session = self.client.session
-        # Create and store a nonce in the session, which will be part of the params 
+        # Create and store a nonce in the session, which will be part of the params
         session["po_nonce"] = "n"
         session.save()
 
@@ -61,14 +61,14 @@ class AddPushoverTestCase(BaseTestCase):
 
     def test_pushover_validates_correct_priority(self):
         """
-        Test to check that a correct priority value passes 
+        Test to check that a correct priority value passes
         """
         # Login Alice
         self.client.login(username="alice@example.org", password="password")
 
         # Initiate a session
         session = self.client.session
-        # Create and store a nonce in the session, which will be part of the params 
+        # Create and store a nonce in the session, which will be part of the params
         session["po_nonce"] = "n"
         session.save()
 

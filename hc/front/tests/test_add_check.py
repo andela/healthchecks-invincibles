@@ -14,7 +14,8 @@ class AddCheckTestCase(BaseTestCase):
     def test_team_access_works(self):
         """
         Test that team access works
-        This method tests if a check added by a user (bob) is accessed by another user (alice) who is on the same team
+        This method tests if a check added by a user (bob) is accessed by another user (alice)
+        who is on the same team
         :return:
         """
 
@@ -45,8 +46,8 @@ class AddCheckTestCase(BaseTestCase):
     def test_team_access_doesnt_work_for_non_teams(self):
         """
         Test that team access doesn't work on users who do not belong to the same team
-        This method tests if a check added by a user (bob) is not accessed by another user (charlie) who is not
-        on the same team
+        This method tests if a check added by a user (bob) is not accessed by another user (charlie)
+        who is not on the same team
         :return:
         """
 
