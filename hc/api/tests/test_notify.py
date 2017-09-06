@@ -69,7 +69,7 @@ class NotifyTestCase(BaseTestCase):
     def test_webhooks_dollarsign_escaping(self, mock_get):
         # If name or tag contains what looks like a variable reference,
         # that should be left alone:
-        
+
 
         template = "http://host/$NAME"
         self._setup_data("webhook", template)
@@ -223,4 +223,10 @@ class NotifyTestCase(BaseTestCase):
         json = kwargs["json"]
         self.assertEqual(json["message_type"], "CRITICAL")
 
-    ### Test that the web hooks handle connection errors and error 500s
+    @patch("hc.api.transports.requests.request", side_effect=ConnectionError)
+    def test_wehooks_handles_connection_errors_and_error_500s(self, mock_post):
+        """Test that the web hooks handle connection errors and error 500s"""
+        self._setup_data("webhook", "http/example")
+        self.channel.notify(self.check)
+        n = Notification.objects.first()
+        self.assertEqual(n.error, "Connection failed")
