@@ -1,6 +1,8 @@
 import json
 from datetime import timedelta as td
 from django.utils.timezone import now
+from django.urls import reverse
+from django.conf import settings
 
 from hc.api.models import Check
 from hc.test import BaseTestCase
@@ -41,6 +43,7 @@ class ListChecksTestCase(BaseTestCase):
         self.assertTrue("checks" in doc)
 
         checks = {check["name"]: check for check in doc["checks"]}
+
         # Assert the expected length of checks
         self.assertEqual(len(checks), 2)
         ### Assert the checks Alice 1 and Alice 2's timeout, grace, ping_url, status,
@@ -53,11 +56,22 @@ class ListChecksTestCase(BaseTestCase):
         self.assertEqual(checks["Alice 1"]["n_pings"], 1)
 
 
-
+        pause_rel_url = reverse("hc-api-pause", args=[self.a1.code])
+        pause_url = settings.SITE_ROOT + pause_rel_url
+        self.assertEqual(checks["Alice 1"]["pause_url"], pause_url)
+        
         self.assertEqual(checks["Alice 2"]["timeout"], 86400)
         self.assertEqual(checks["Alice 2"]["grace"], 3600)
         self.assertEqual(checks["Alice 2"]["ping_url"], self.a2.url())
         self.assertEqual(checks["Alice 2"]["status"], "up")
+
+        self.assertEqual(checks["Alice 2"]["last_ping"], self.now.isoformat())
+
+        pause_rel_url = reverse("hc-api-pause", args=[self.a2.code])
+        pause_url = settings.SITE_ROOT + pause_rel_url
+
+        self.assertEqual(checks["Alice 2"]["n_pings"], 0)
+
 
     def test_it_shows_only_users_checks(self):
         """Test for displaying only users checks"""

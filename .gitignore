@@ -8,7 +8,10 @@ static-collected
 
 .DS_Store
 static/.DS_Store
+<<<<<<< HEAD
 .idea/
+=======
+>>>>>>> 7324fd306b602ca2633a0bd6f119a50ef93fda31
 .idea/healthchecks-invincibles.iml
 .idea/misc.xml
 .idea/modules.xml
