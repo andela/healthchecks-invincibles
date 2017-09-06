@@ -101,23 +101,32 @@ def set_password_link_sent(request):
 
 
 def check_token(request, username, token):
-    if request.user.is_authenticated() and request.user.username == username:
+    if request.user.is_authenticated and request.user.username == username:
         # User is already logged in
         return redirect("hc-checks")
 
-    user = authenticate(username=username, token=token)
-    if user is not None and user.is_active:
-        # This should get rid of "welcome_code" in session
-        request.session.flush()
+    # Some email servers open links in emails to check for malicious content.
+    # To work around this, we sign user in if the method is POST.
+    #
+    # If the method is GET, we instead serve a HTML form and a piece
+    # of Javascript to automatically submit it.
 
-        user.profile.token = ""
-        user.profile.save()
-        auth_login(request, user)
+    if request.method == "POST":
+        user = authenticate(username=username, token=token)
+        if user is not None and user.is_active:
+            # This should get rid of "welcome_code" in session
+            request.session.flush()
 
-        return redirect("hc-checks")
+            user.profile.token = ""
+            user.profile.save()
+            auth_login(request, user)
 
-    request.session["bad_link"] = True
-    return redirect("hc-login")
+            return redirect("hc-checks")
+
+        request.session["bad_link"] = True
+        return redirect("hc-login")
+
+    return render(request, "accounts/check_token_submit.html")
 
 
 @login_required
@@ -201,6 +210,7 @@ def profile(request):
         badge_urls.append(get_badge_url(username, tag))
 
     ctx = {
+        "page": "profile",
         "badge_urls": badge_urls,
         "profile": profile,
         "show_api_key": show_api_key

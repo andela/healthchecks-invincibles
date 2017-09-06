@@ -6,10 +6,10 @@ import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
 from django.db.models import Count
-from django.http import HttpResponseBadRequest, HttpResponseForbidden
+from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
@@ -75,7 +75,7 @@ def _welcome_check(request):
 
 
 def index(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect("hc-checks")
 
     check = _welcome_check(request)
@@ -165,6 +165,21 @@ def update_timeout(request, code):
         check.timeout = td(seconds=form.cleaned_data["timeout"])
         check.grace = td(seconds=form.cleaned_data["grace"])
         check.save()
+
+    return redirect("hc-checks")
+
+
+@login_required
+@uuid_or_400
+def pause(request, code):
+    assert request.method == "POST"
+
+    check = get_object_or_404(Check, code=code)
+    if check.user_id != request.team.user.id:
+        return HttpResponseForbidden()
+
+    check.status = "paused"
+    check.save()
 
     return redirect("hc-checks")
 
@@ -270,6 +285,7 @@ def channels(request):
         "page": "channels",
         "channels": channels,
         "num_checks": num_checks,
+        "enable_pushbullet": settings.PUSHBULLET_CLIENT_ID is not None,
         "enable_pushover": settings.PUSHOVER_API_TOKEN is not None
     }
     return render(request, "front/channels.html", ctx)
@@ -374,7 +390,7 @@ def add_pd(request):
 
 
 def add_slack(request):
-    if not settings.SLACK_CLIENT_ID and not request.user.is_authenticated():
+    if not settings.SLACK_CLIENT_ID and not request.user.is_authenticated:
         return redirect("hc-login")
 
     ctx = {
@@ -419,9 +435,54 @@ def add_hipchat(request):
 
 
 @login_required
+def add_pushbullet(request):
+    if settings.PUSHBULLET_CLIENT_ID is None:
+        raise Http404("pushbullet integration is not available")
+
+    if "code" in request.GET:
+        code = request.GET.get("code", "")
+        if len(code) < 8:
+            return HttpResponseBadRequest()
+
+        result = requests.post("https://api.pushbullet.com/oauth2/token", {
+            "client_id": settings.PUSHBULLET_CLIENT_ID,
+            "client_secret": settings.PUSHBULLET_CLIENT_SECRET,
+            "code": code,
+            "grant_type": "authorization_code"
+        })
+
+        doc = result.json()
+        if "access_token" in doc:
+            channel = Channel(kind="pushbullet")
+            channel.user = request.team.user
+            channel.value = doc["access_token"]
+            channel.save()
+            channel.assign_all_checks()
+            messages.success(request,
+                             "The Pushbullet integration has been added!")
+        else:
+            messages.warning(request, "Something went wrong")
+
+        return redirect("hc-channels")
+
+    redirect_uri = settings.SITE_ROOT + reverse("hc-add-pushbullet")
+    authorize_url = "https://www.pushbullet.com/authorize?" + urlencode({
+        "client_id": settings.PUSHBULLET_CLIENT_ID,
+        "redirect_uri": redirect_uri,
+        "response_type": "code"
+    })
+
+    ctx = {
+        "page": "channels",
+        "authorize_url": authorize_url
+    }
+    return render(request, "integrations/add_pushbullet.html", ctx)
+
+
+@login_required
 def add_pushover(request):
     if settings.PUSHOVER_API_TOKEN is None or settings.PUSHOVER_SUBSCRIPTION_URL is None:
-        return HttpResponseForbidden()
+        raise Http404("pushover integration is not available")
 
     if request.method == "POST":
         # Initiate the subscription

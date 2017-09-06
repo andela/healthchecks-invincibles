@@ -28,7 +28,7 @@ def get_client_token(request):
 
 def pricing(request):
     sub = None
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         # Don't use Subscription.objects.for_user method here, so a
         # subscription object is not created just by viewing a page.
         sub = Subscription.objects.filter(user_id=request.user.id).first()
@@ -116,6 +116,39 @@ def create_plan(request):
         profile.save()
 
     request.session["first_charge"] = True
+    return redirect("hc-pricing")
+
+
+@login_required
+@require_POST
+def update_payment_method(request):
+    sub = Subscription.objects.for_user(request.user)
+
+    if not sub.customer_id or not sub.subscription_id:
+        return HttpResponseBadRequest()
+
+    if "payment_method_nonce" not in request.POST:
+        return HttpResponseBadRequest()
+
+    result = braintree.PaymentMethod.create({
+        "customer_id": sub.customer_id,
+        "payment_method_nonce": request.POST["payment_method_nonce"]
+    })
+
+    if not result.is_success:
+        return log_and_bail(request, result)
+
+    payment_method_token = result.payment_method.token
+    result = braintree.Subscription.update(sub.subscription_id, {
+        "payment_method_token": payment_method_token
+    })
+
+    if not result.is_success:
+        return log_and_bail(request, result)
+
+    sub.payment_method_token = payment_method_token
+    sub.save()
+
     return redirect("hc-pricing")
 
 

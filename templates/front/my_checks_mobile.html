@@ -16,7 +16,7 @@
             class="btn remove-link check-menu-remove"
             data-name="{{ check.name_then_code }}"
             data-url="{% url 'hc-remove-check' check.code %}">
-            <span class="glyphicon glyphicon-remove"></span>
+            <span class="icon-close"></span>
         </a>
 
         <table class="table">
@@ -25,6 +25,8 @@
                 <td>
                     {% if check.get_status == "new" %}
                         <span class="label label-default">NEW</span>
+                    {% elif check.get_status == "paused" %}
+                        <span class="label label-default">PAUSED</span>
                     {% elif check.in_grace_period %}
                         <span class="label label-warning">LATE</span>
                     {% elif check.get_status == "up" %}

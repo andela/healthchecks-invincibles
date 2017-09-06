@@ -120,7 +120,7 @@ table.channels-table > tbody > tr > th {
     margin-left: 72px;
 }
 
-.add-integration a {
+.add-integration a.btn {
     position: absolute;
     right: 16px;
     top: 50%;
@@ -131,14 +131,9 @@ table.channels-table > tbody > tr > th {
     line-height: 40px;
 }
 
-
-.ai-icon img {
-    width: 48px;
-    height: 48px;
-}
-
 .btn img.ai-icon {
    height: 1.4em;
+   margin-right: 2px;
 }
 
 .add-integration h2 {
@@ -177,4 +172,16 @@ table.channels-table > tbody > tr > th {
 
 .variable-column {
     width: 160px;
+}
+
+.add-integration li.link-to-github {
+    padding: 16px 0;
+}
+
+.link-to-github p {
+    margin-bottom: 0;
+}
+
+.page-channels .icon-delete {
+    font-size: 16px;
 }

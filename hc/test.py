@@ -25,6 +25,7 @@ class BaseTestCase(TestCase):
 
         self.bobs_profile = Profile(user=self.bob)
         self.bobs_profile.current_team = self.profile
+        # self.bobs_profile.team_access_allowed = True
         self.bobs_profile.save()
 
         m = Member(team=self.profile, user=self.bob)
@@ -35,5 +36,7 @@ class BaseTestCase(TestCase):
         self.charlie.set_password("password")
         self.charlie.save()
 
-        charlies_profile = Profile(user=self.charlie)
-        charlies_profile.save()
+        ### Set Charles not to have access to Alice's stuff
+        self.charlies_profile = Profile(user=self.charlie)
+        # self.charlies_profile.current_team = self.profile
+        self.charlies_profile.save()

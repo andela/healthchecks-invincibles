@@ -40,15 +40,14 @@ INSTALLED_APPS = (
     'hc.payments'
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'hc.accounts.middleware.TeamAccessMiddleware',
 )
 
@@ -145,6 +144,10 @@ PUSHOVER_API_TOKEN = None
 PUSHOVER_SUBSCRIPTION_URL = None
 PUSHOVER_EMERGENCY_RETRY_DELAY = 300
 PUSHOVER_EMERGENCY_EXPIRATION = 86400
+
+# Pushbullet integration -- override these in local_settings
+PUSHBULLET_CLIENT_ID = None
+PUSHBULLET_CLIENT_SECRET = None
 
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *

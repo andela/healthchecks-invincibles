@@ -6,11 +6,28 @@ from hc.test import BaseTestCase
 from mock import patch
 
 
-@override_settings(PUSHOVER_API_TOKEN="token", PUSHOVER_SUBSCRIPTION_URL="url")
-class SlackCallbackTestCase(BaseTestCase):
+class AddSlackTestCase(BaseTestCase):
+
+    @override_settings(SLACK_CLIENT_ID=None)
+    def test_webhook_instructions_work(self):
+        self.client.login(username="alice@example.org", password="password")
+        r = self.client.get("/integrations/add_slack/")
+        self.assertContains(r, "Integration Settings", status_code=200)
+
+    @override_settings(SLACK_CLIENT_ID="foo")
+    def test_slack_button(self):
+        self.client.login(username="alice@example.org", password="password")
+        r = self.client.get("/integrations/add_slack/")
+        self.assertContains(r, "slack.com/oauth/authorize", status_code=200)
+
+    @override_settings(SLACK_CLIENT_ID="foo")
+    def test_landing_page(self):
+        r = self.client.get("/integrations/add_slack/")
+        self.assertContains(r, "Before adding Slack integration",
+                            status_code=200)
 
     @patch("hc.front.views.requests.post")
-    def test_it_works(self, mock_post):
+    def test_it_handles_oauth_response(self, mock_post):
         oauth_response = {
             "ok": True,
             "team_name": "foo",
@@ -36,7 +53,7 @@ class SlackCallbackTestCase(BaseTestCase):
         self.assertEqual(ch.slack_webhook_url, "http://example.org")
 
     @patch("hc.front.views.requests.post")
-    def test_it_handles_error(self, mock_post):
+    def test_it_handles_oauth_error(self, mock_post):
         oauth_response = {
             "ok": False,
             "error": "something went wrong"

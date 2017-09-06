@@ -34,6 +34,7 @@
             {% if ch.kind == "pd" %} PagerDuty {% endif %}
             {% if ch.kind == "po" %} Pushover {% endif %}
             {% if ch.kind == "victorops" %} VictorOps {% endif %}
+            {% if ch.kind == "pushbullet" %} Pushbullet {% endif %}
             </td>
             <td class="value-cell">
                 {% if ch.kind == "email" %}
@@ -76,6 +77,9 @@
                         </tr>
                         {% endif %}
                     </table>
+                {% elif ch.kind == "pushbullet" %}
+                    <span class="preposition">API key</span>
+                    {{ ch.value }}
                 {% else %}
                     {{ ch.value }}
                 {% endif %}
@@ -108,7 +112,7 @@
                     data-url="{% url 'hc-remove-channel' ch.code %}"
                     class="btn btn-sm btn-default channel-remove"
                     type="button">
-                    <span class="glyphicon glyphicon-trash"></span>
+                    <span class="icon-delete"></span>
                 </button>
             </td>
             <td>
@@ -175,6 +179,17 @@
 
             <a href="{% url 'hc-add-victorops' %}" class="btn btn-primary">Add Integration</a>
         </li>
+        {% if enable_pushbullet %}
+        <li>
+            <img src="{% static 'img/integrations/pushbullet.png' %}"
+                 class="icon" alt="Pushbullet icon" />
+
+            <h2>Pushbullet</h2>
+            <p>Pushbullet connects your devices, making them feel like one.</p>
+
+            <a href="{% url 'hc-add-pushbullet' %}" class="btn btn-primary">Add Integration</a>
+        </li>
+        {% endif %}
         {% if enable_pushover %}
         <li>
             <img src="{% static 'img/integrations/pushover.png' %}"
@@ -186,10 +201,16 @@
             <a href="{% url 'hc-add-pushover' %}" class="btn btn-primary">Add Integration</a>
         </li>
         {% endif %}
+        <li class="link-to-github">
+            <img src="{% static 'img/integrations/missing.png' %}"
+                 class="icon" alt="Suggest New Integration" />
+            <p>
+                Your favorite service or notification method not listed? <br />
+                Please <a href="https://github.com/healthchecks/healthchecks/issues">file an issue on GitHub</a>!
+            </p>
+        </li>
+
     </ul>
-
-
-
 </div>
 </div>
 
