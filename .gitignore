@@ -7,6 +7,7 @@ static-collected
 
 .DS_Store
 static/.DS_Store
-.idea/
 .vscode/
-htmlcov/
+hc-venv/
+healthchecks-venv/
+.idea/
