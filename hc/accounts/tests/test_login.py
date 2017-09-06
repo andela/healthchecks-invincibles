@@ -46,10 +46,4 @@ class LoginTestCase(TestCase):
         # if bad_link is in session, a get request to "/accounts/login/" should clear this attribute
         self.client.session["bad_link"] = True
         self.client.get("/accounts/login/")
-<<<<<<< HEAD
         assert "bad_link" not in self.client.session
-=======
-        assert "bad_link" not in self.client.session
-
-
->>>>>>> 541ed71a190cab489e68f1e99e72e447acf09a76
