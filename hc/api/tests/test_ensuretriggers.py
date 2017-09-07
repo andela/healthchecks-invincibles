@@ -21,16 +21,24 @@ class EnsureTriggersTestCase(TestCase):
         check.refresh_from_db()
         assert check.alert_after is not None
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
         
 >>>>>>> test(EnsureTriggers): test for alert before and after trigger
+=======
+        
+>>>>>>> 167b23a4f41a3653abdefdbaace0f59f92fc0628
         alert_after = check.alert_after
         check.last_ping += timedelta(days=1)
         check.save()
         check.refresh_from_db()
         self.assertLess(alert_after, check.alert_after)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         
 >>>>>>> test(EnsureTriggers): test for alert before and after trigger
+=======
+        
+>>>>>>> 167b23a4f41a3653abdefdbaace0f59f92fc0628
