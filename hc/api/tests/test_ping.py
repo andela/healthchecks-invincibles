@@ -95,6 +95,4 @@ class PingTestCase(TestCase):
         self.assertNotEqual(initial_status, current_status)
 
 
-
-
     ### Test that the csrf_client head works
