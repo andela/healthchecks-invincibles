@@ -6,7 +6,6 @@ hc.sqlite
 hc-venv/
 hc/local_settings.py
 static-collected
-
 .DS_Store
 static/.DS_Store
 .idea/
