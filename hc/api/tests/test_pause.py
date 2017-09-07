@@ -12,7 +12,7 @@ class PauseTestCase(BaseTestCase):
         r = self.client.post(url, "", content_type="application/json",
                              HTTP_X_API_KEY="abc")
 
-        ### Assert the expected status code and check's status
+        # Assert the expected status code and check's status
         self.assertEqual(r.status_code, 200)
         self.assertEqual(check.status, "up")
 
