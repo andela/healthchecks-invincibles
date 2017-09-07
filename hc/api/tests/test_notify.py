@@ -38,8 +38,8 @@ class NotifyTestCase(BaseTestCase):
         self._setup_data("webhook", "http://example")
         self.channel.notify(self.check)
 
-        n = Notification.objects.get()
-        self.assertEqual(n.error, "Connection timed out")
+        notification = Notification.objects.get()
+        self.assertEqual(notification.error, "Connection timed out")
 
     @patch("hc.api.transports.requests.request")
     def test_webhooks_ignore_up_events(self, mock_get):
@@ -70,7 +70,6 @@ class NotifyTestCase(BaseTestCase):
         # If name or tag contains what looks like a variable reference,
         # that should be left alone:
 
-
         template = "http://host/$NAME"
         self._setup_data("webhook", template)
         self.check.name = "$TAG1"
@@ -97,8 +96,8 @@ class NotifyTestCase(BaseTestCase):
         self._setup_data("email", "alice@example.org")
         self.channel.notify(self.check)
 
-        n = Notification.objects.get()
-        self.assertEqual(n.error, "")
+        notification = Notification.objects.get()
+        self.assertEqual(notification.error, "")
 
         # And email should have been sent
         self.assertEqual(len(mail.outbox), 1)
@@ -108,8 +107,8 @@ class NotifyTestCase(BaseTestCase):
         self.channel.notify(self.check)
 
         assert Notification.objects.count() == 1
-        n = Notification.objects.first()
-        self.assertEqual(n.error, "Email not verified")
+        notification = Notification.objects.first()
+        self.assertEqual(notification.error, "Email not verified")
         self.assertEqual(len(mail.outbox), 0)
 
     @override_settings(USE_PAYMENTS=True)
@@ -120,8 +119,8 @@ class NotifyTestCase(BaseTestCase):
 
         self.channel.notify(self.check)
 
-        n = Notification.objects.get()
-        self.assertEqual(n.error, "")
+        notification = Notification.objects.get()
+        self.assertEqual(notification.error, "")
 
         # Check is up, payments are enabled, and the user does not have team
         # access: the email should contain upgrade note
@@ -157,8 +156,8 @@ class NotifyTestCase(BaseTestCase):
 
     @patch("hc.api.transports.requests.request")
     def test_slack_with_complex_value(self, mock_post):
-        v = json.dumps({"incoming_webhook": {"url": "123"}})
-        self._setup_data("slack", v)
+        json_result = json.dumps({"incoming_webhook": {"url": "123"}})
+        self._setup_data("slack", json_result)
         mock_post.return_value.status_code = 200
 
         self.channel.notify(self.check)
@@ -174,8 +173,8 @@ class NotifyTestCase(BaseTestCase):
 
         self.channel.notify(self.check)
 
-        n = Notification.objects.get()
-        self.assertEqual(n.error, "Received status code 500")
+        notification = Notification.objects.get()
+        self.assertEqual(notification.error, "Received status code 500")
 
     @patch("hc.api.transports.requests.request", side_effect=Timeout)
     def test_slack_handles_timeout(self, mock_post):
@@ -183,8 +182,8 @@ class NotifyTestCase(BaseTestCase):
 
         self.channel.notify(self.check)
 
-        n = Notification.objects.get()
-        self.assertEqual(n.error, "Connection timed out")
+        notification = Notification.objects.get()
+        self.assertEqual(notification.error, "Connection timed out")
 
     @patch("hc.api.transports.requests.request")
     def test_hipchat(self, mock_post):
@@ -192,8 +191,8 @@ class NotifyTestCase(BaseTestCase):
         mock_post.return_value.status_code = 204
 
         self.channel.notify(self.check)
-        n = Notification.objects.first()
-        self.assertEqual(n.error, "")
+        notification = Notification.objects.first()
+        self.assertEqual(notification.error, "")
 
         args, kwargs = mock_post.call_args
         json = kwargs["json"]
@@ -228,5 +227,5 @@ class NotifyTestCase(BaseTestCase):
         """Test that the web hooks handle connection errors and error 500s"""
         self._setup_data("webhook", "http/example")
         self.channel.notify(self.check)
-        n = Notification.objects.first()
-        self.assertEqual(n.error, "Connection failed")
+        notification = Notification.objects.first()
+        self.assertEqual(notification.error, "Connection failed")

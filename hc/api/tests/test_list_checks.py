@@ -37,9 +37,9 @@ class ListChecksTestCase(BaseTestCase):
 
     def test_it_works(self):
         """Tests for listing all checks"""
-        r = self.get()
-        self.assertEqual(r.status_code,200)
-        doc = r.json()
+        response = self.get()
+        self.assertEqual(response.status_code,200)
+        doc = response.json()
         self.assertTrue("checks" in doc)
 
         checks = {check["name"]: check for check in doc["checks"]}
@@ -53,7 +53,6 @@ class ListChecksTestCase(BaseTestCase):
         self.assertEqual(checks["Alice 1"]["ping_url"], self.a1.url())
         self.assertEqual(checks["Alice 1"]["status"], "new")
         self.assertEqual(checks["Alice 1"]["n_pings"], 1)
-
 
         pause_rel_url = reverse("hc-api-pause", args=[self.a1.code])
         pause_url = settings.SITE_ROOT + pause_rel_url
@@ -71,18 +70,18 @@ class ListChecksTestCase(BaseTestCase):
 
         self.assertEqual(checks["Alice 2"]["n_pings"], 0)
 
-
     def test_it_shows_only_users_checks(self):
         """Test for displaying only users checks"""
         bobs_check = Check(user=self.bob, name="Bob 1")
         bobs_check.save()
 
-        r = self.get()
-        data = r.json()
+        response = self.get()
+        data = response.json()
         self.assertEqual(len(data["checks"]), 2)
         for check in data["checks"]:
             self.assertNotEqual(check["name"], "Bob 1")
+            
     def test_it_accepts_api_key_in_the_request(self):
         """Test that it accepts an api_key in the request"""
-        r = self.client.get("/api/v1/checks/", HTTP_X_API_KEY="abc", content_type="application/json")
-        self.assertEqual(r.status_code, 200)
+        response = self.client.get("/api/v1/checks/", HTTP_X_API_KEY="abc", content_type="application/json")
+        self.assertEqual(response.status_code, 200)
