@@ -10,8 +10,8 @@ class PingTestCase(TestCase):
         self.check = Check.objects.create()
 
     def test_it_works(self):
-        r = self.client.get("/ping/%s/" % self.check.code)
-        assert r.status_code == 200
+        response = self.client.get("/ping/%s/" % self.check.code)
+        assert response.status_code == 200
 
         self.check.refresh_from_db()
         assert self.check.status == "up"
@@ -20,16 +20,16 @@ class PingTestCase(TestCase):
         assert ping.scheme == "http"
 
     def test_it_handles_bad_uuid(self):
-        r = self.client.get("/ping/not-uuid/")
-        assert r.status_code == 400
+        response = self.client.get("/ping/not-uuid/")
+        assert response.status_code == 400
 
     def test_it_handles_120_char_ua(self):
         ua = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_4) "
               "AppleWebKit/537.36 (KHTML, like Gecko) "
               "Chrome/44.0.2403.89 Safari/537.36")
 
-        r = self.client.get("/ping/%s/" % self.check.code, HTTP_USER_AGENT=ua)
-        assert r.status_code == 200
+        response = self.client.get("/ping/%s/" % self.check.code, HTTP_USER_AGENT=ua)
+        assert response.status_code == 200
 
         ping = Ping.objects.latest("id")
         assert ping.ua == ua
@@ -37,8 +37,8 @@ class PingTestCase(TestCase):
     def test_it_truncates_long_ua(self):
         ua = "01234567890" * 30
 
-        r = self.client.get("/ping/%s/" % self.check.code, HTTP_USER_AGENT=ua)
-        assert r.status_code == 200
+        response = self.client.get("/ping/%s/" % self.check.code, HTTP_USER_AGENT=ua)
+        assert response.status_code == 200
 
         ping = Ping.objects.latest("id")
         assert len(ping.ua) == 200
@@ -46,28 +46,55 @@ class PingTestCase(TestCase):
 
     def test_it_reads_forwarded_ip(self):
         ip = "1.1.1.1"
-        r = self.client.get("/ping/%s/" % self.check.code,
+        response = self.client.get("/ping/%s/" % self.check.code,
                             HTTP_X_FORWARDED_FOR=ip)
         ping = Ping.objects.latest("id")
-        ### Assert the expected response status code and ping's remote address
+        # Assert the expected response status code and ping's remote address
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ping.remote_addr, "1.1.1.1")
 
         ip = "1.1.1.1, 2.2.2.2"
-        r = self.client.get("/ping/%s/" % self.check.code,
+        response = self.client.get("/ping/%s/" % self.check.code,
                             HTTP_X_FORWARDED_FOR=ip, REMOTE_ADDR="3.3.3.3")
         ping = Ping.objects.latest("id")
-        assert r.status_code == 200
+        assert response.status_code == 200
         assert ping.remote_addr == "1.1.1.1"
 
     def test_it_reads_forwarded_protocol(self):
-        r = self.client.get("/ping/%s/" % self.check.code,
+        response = self.client.get("/ping/%s/" % self.check.code,
                             HTTP_X_FORWARDED_PROTO="https")
         ping = Ping.objects.latest("id")
-        ### Assert the expected response status code and ping's scheme
+        # Assert the expected response status code and ping's scheme
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(ping.scheme, "https")
 
     def test_it_never_caches(self):
-        r = self.client.get("/ping/%s/" % self.check.code)
-        assert "no-cache" in r.get("Cache-Control")
+        response = self.client.get("/ping/%s/" % self.check.code)
+        assert "no-cache" in response.get("Cache-Control")
 
-    ### Test that when a ping is made a check with a paused status changes status
-    ### Test that a post to a ping works
-    ### Test that the csrf_client head works
+    # Test that a post to a ping works
+    def test_that_a_post_to_a_ping_works(self):
+        """tests that a post to a ping works"""
+        response = self.client.get("/ping/%s/" % self.check.code)
+        assert response.status_code == 200
+        self.check.refresh_from_db()
+        assert self.check.status == "up"
+        ping = Ping.objects.latest("id")
+        assert ping.scheme == "http"
+
+    # Test that when a ping is made a check with a paused status changes status
+    def test_when_a_ping_is_made_a_check_with_paused_status_changes_status(self):
+        """Test that when a ping is made a check with a paused status changes status"""
+        response = self.client.get("/ping/%s/" % self.check.code)
+
+        check = Check.objects.get()
+        initial_status = check.status = "paused"
+        ping = Ping.objects.latest("id")
+        current_status = self.check.status
+        self.assertNotEqual(initial_status, current_status)
+
+    # Test that the csrf_client head works
+    def test_csrf_client_works(self):
+        client = Client(enforce_csrf_checks=True)
+        response = client.post("/ping/%s/" % self.check.code)
+        self.assertEqual(response.status_code, 200)

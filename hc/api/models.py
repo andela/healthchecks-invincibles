@@ -103,6 +103,7 @@ class Check(models.Model):
         if self.user:
             channels = Channel.objects.filter(user=self.user)
             self.channel_set.add(*channels)
+            return True
 
     def tags_list(self):
         return [t.strip() for t in self.tags.split(" ") if t.strip()]
