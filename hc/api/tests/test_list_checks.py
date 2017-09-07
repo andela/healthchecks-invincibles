@@ -52,8 +52,8 @@ class ListChecksTestCase(BaseTestCase):
         self.assertEqual(checks["Alice 1"]["grace"], 900)
         self.assertEqual(checks["Alice 1"]["ping_url"], self.a1.url())
         self.assertEqual(checks["Alice 1"]["status"], "new")
-        self.assertEqual(checks["Alice 1"]["last_ping"], self.now.isoformat()) #represents the date in ISO 8601 format, ‘YYYY-MM-DD’
         self.assertEqual(checks["Alice 1"]["n_pings"], 1)
+
 
         pause_rel_url = reverse("hc-api-pause", args=[self.a1.code])
         pause_url = settings.SITE_ROOT + pause_rel_url
@@ -63,6 +63,7 @@ class ListChecksTestCase(BaseTestCase):
         self.assertEqual(checks["Alice 2"]["grace"], 3600)
         self.assertEqual(checks["Alice 2"]["ping_url"], self.a2.url())
         self.assertEqual(checks["Alice 2"]["status"], "up")
+
         self.assertEqual(checks["Alice 2"]["last_ping"], self.now.isoformat())
 
         pause_rel_url = reverse("hc-api-pause", args=[self.a2.code])
