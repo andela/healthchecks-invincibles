@@ -3,7 +3,7 @@ __pycache__/
 .coverage
 hc.sqlite
 static-collected
-
+hc/local_settings.py
 .DS_Store
 static/.DS_Store
 .vscode/
