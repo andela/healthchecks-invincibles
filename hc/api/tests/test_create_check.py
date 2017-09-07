@@ -59,21 +59,13 @@ class CreateCheckTestCase(BaseTestCase):
         self.assertEqual(r.status_code, 201)
 
     def test_it_handles_missing_request_body(self):
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 167b23a4f41a3653abdefdbaace0f59f92fc0628
         """Make the post request with a missing body and get the response"""
         r = self.client.post(self.URL, content_type="application/json")
         string_content = r.content.decode("utf-8")
         json_content = json.loads(string_content)
         self.assertEqual(r.status_code, 400)
-<<<<<<< HEAD
 
-=======
-       
->>>>>>> 167b23a4f41a3653abdefdbaace0f59f92fc0628
         self.assertEqual(json_content.get("error"), "wrong api_key")
 
     def test_it_handles_invalid_json(self):
@@ -107,11 +99,7 @@ class CreateCheckTestCase(BaseTestCase):
         string_content = r.content.decode("utf-8")
         json_content = json.loads(string_content)
         self.assertEqual(json_content.get("error"), "name is not a string")
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 167b23a4f41a3653abdefdbaace0f59f92fc0628
     def test_it_assigns_channels(self):
         """Test for the assignment of channels"""
         r = self.post({
@@ -122,7 +110,7 @@ class CreateCheckTestCase(BaseTestCase):
             "grace": 60})
         check = Check.objects.get()
         self.assertTrue(check.assign_all_channels)
-<<<<<<< HEAD
+
 
     def test_timeout_is_too_small(self):
         """Test for the timeout is too small when set to 1"""
@@ -147,8 +135,8 @@ class CreateCheckTestCase(BaseTestCase):
         string_content = r.content.decode("utf-8")
         json_content = json.loads(string_content)
         self.assertEqual(json_content.get("error"), "timeout is too large")
-=======
-        
+
+
     def test_timeout_is_too_small(self):
         """Test for the timeout is too small when set to 1"""
         r = self.post({
@@ -160,7 +148,7 @@ class CreateCheckTestCase(BaseTestCase):
         string_content = r.content.decode("utf-8")
         json_content = json.loads(string_content)
         self.assertEqual(json_content.get("error"), "timeout is too small")
-        
+
     def test_timeout_is_too_large(self):
         """Test for the timeout is too large"""
         r = self.post({
@@ -172,5 +160,3 @@ class CreateCheckTestCase(BaseTestCase):
         string_content = r.content.decode("utf-8")
         json_content = json.loads(string_content)
         self.assertEqual(json_content.get("error"), "timeout is too large")
-
->>>>>>> 167b23a4f41a3653abdefdbaace0f59f92fc0628

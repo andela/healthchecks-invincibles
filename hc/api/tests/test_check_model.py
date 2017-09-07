@@ -13,7 +13,7 @@ class CheckModelTestCase(TestCase):
 
         check.tags = " foo  bar "
         self.assertEquals(check.tags_list(), ["foo", "bar"])
-        
+
         check.tags = ""
         self.assertEqual(len(check.tags_list()), 0)
 
@@ -36,4 +36,3 @@ class CheckModelTestCase(TestCase):
 
         check.status = "paused"
         self.assertFalse(check.in_grace_period())
-
