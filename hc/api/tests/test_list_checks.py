@@ -46,8 +46,8 @@ class ListChecksTestCase(BaseTestCase):
 
         # Assert the expected length of checks
         self.assertEqual(len(checks), 2)
-        ### Assert the checks Alice 1 and Alice 2's timeout, grace, ping_url, status,
-        ### last_ping, n_pings and pause_url
+        # Assert the checks Alice 1 and Alice 2's timeout, grace, ping_url, status,
+        # last_ping, n_pings and pause_url
         self.assertEqual(checks["Alice 1"]["timeout"], 3600)
         self.assertEqual(checks["Alice 1"]["grace"], 900)
         self.assertEqual(checks["Alice 1"]["ping_url"], self.a1.url())
