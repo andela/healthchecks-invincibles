@@ -58,7 +58,7 @@ class ListChecksTestCase(BaseTestCase):
         pause_rel_url = reverse("hc-api-pause", args=[self.a1.code])
         pause_url = settings.SITE_ROOT + pause_rel_url
         self.assertEqual(checks["Alice 1"]["pause_url"], pause_url)
-        
+
         self.assertEqual(checks["Alice 2"]["timeout"], 86400)
         self.assertEqual(checks["Alice 2"]["grace"], 3600)
         self.assertEqual(checks["Alice 2"]["ping_url"], self.a2.url())
