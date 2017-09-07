@@ -49,7 +49,7 @@ class PingTestCase(TestCase):
         r = self.client.get("/ping/%s/" % self.check.code,
                             HTTP_X_FORWARDED_FOR=ip)
         ping = Ping.objects.latest("id")
-        ### Assert the expected response status code and ping's remote address
+        # Assert the expected response status code and ping's remote address
         self.assertEqual(r.status_code, 200)
         self.assertEqual(ping.remote_addr, "1.1.1.1")
 
@@ -64,7 +64,7 @@ class PingTestCase(TestCase):
         r = self.client.get("/ping/%s/" % self.check.code,
                             HTTP_X_FORWARDED_PROTO="https")
         ping = Ping.objects.latest("id")
-        ### Assert the expected response status code and ping's scheme
+        # Assert the expected response status code and ping's scheme
         self.assertEqual(r.status_code, 200)
         self.assertEqual(ping.scheme, "https")
 
@@ -72,6 +72,29 @@ class PingTestCase(TestCase):
         r = self.client.get("/ping/%s/" % self.check.code)
         assert "no-cache" in r.get("Cache-Control")
 
-    ### Test that when a ping is made a check with a paused status changes status
-    ### Test that a post to a ping works
+    # Test that a post to a ping works
+    def test_that_a_post_to_a_ping_works(self):
+        """tests that a post to a ping works"""
+        r = self.client.get("/ping/%s/" % self.check.code)
+        assert r.status_code == 200
+        self.check.refresh_from_db()
+        assert self.check.status == "up"
+        ping = Ping.objects.latest("id")
+        assert ping.scheme == "http"
+
+
+    # Test that when a ping is made a check with a paused status changes status
+    def test_when_a_ping_is_made_a_check_with_paused_status_changes_status(self):
+        """Test that when a ping is made a check with a paused status changes status"""
+        r = self.client.get("/ping/%s/" % self.check.code)
+
+        check = Check.objects.get()
+        initial_status = check.status = "paused"
+        ping = Ping.objects.latest("id")
+        current_status = self.check.status
+        self.assertNotEqual(initial_status, current_status)
+
+
+
+
     ### Test that the csrf_client head works
