@@ -110,6 +110,16 @@ if os.environ.get("DB") == "mysql":
         }
     }
 
+if os.getcwd() == "/app":
+    from dj_database_url import parse
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    DATABASES = {
+        "default": parse(
+            DATABASE_URL,
+            conn_max_age = 600
+        )
+    }
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -159,13 +169,3 @@ if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
 else:
     warnings.warn("local_settings.py not found, using defaults")
-
-if os.getcwd() == "/app":
-    from dj_database_url import parse
-    DATABASE_URL = os.getenv('DATABASE_URL')
-    DATABASES = {
-        "default": parse(
-            DATABASE_URL,
-            conn_max_age = 600
-        )
-    }
