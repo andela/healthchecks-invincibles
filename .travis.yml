@@ -16,4 +16,4 @@ script:
 after_success: coveralls
 cache: pip
 notifications:
-    slack: andela:vhzCzytpng8f35nG3Yca5Ag3
+    slack: andela:hXr9lSsUFs90Gg7SsXynwoT3
