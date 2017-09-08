@@ -1,16 +1,15 @@
 __pycache__/
 *.pyc
 .coverage
+.idea/
 hc.sqlite
-hc-venv/
 hc/local_settings.py
 static-collected
 
 .DS_Store
 static/.DS_Store
-.idea/
-.idea/healthchecks-invincibles.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/workspace.xml
-solution.py
+.vscode/
+hc-venv/
+healthchecks-venv/
+.vscode/
+htmlcov/
