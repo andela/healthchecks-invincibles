@@ -7,8 +7,6 @@ coveralls==1.2.0
 cssselect==1.0.1
 cssutils==1.0.2
 dj-database-url==0.4.2
-cssselect==1.0.1
-cssutils==1.0.2
 decorator==4.1.2
 Django==1.10
 django-appconf==1.0.1
