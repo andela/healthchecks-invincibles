@@ -75,7 +75,7 @@ class Check(models.Model):
         return "%s@%s" % (self.code, settings.PING_EMAIL_DOMAIN)
 
     def send_alert(self):
-        if self.status not in ("up", "down", "nag"):
+        if self.status not in ("up", "down", "nag", "often"):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
         errors = []
@@ -117,13 +117,11 @@ class Check(models.Model):
             if self.next_nag_time < now:
                 return "nag"
 
-
         return "down"
 
     def in_grace_period(self):
         if self.status in ("new", "paused"):
             return False
-
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
