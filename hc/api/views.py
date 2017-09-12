@@ -23,7 +23,7 @@ def ping(request, code):
 
     check.n_pings = F("n_pings") + 1
     check.last_ping = timezone.now()
-    if check.status in ("new", "paused"):
+    if check.status in ("new", "paused", "often"):
         check.status = "up"
 
     check.save()
@@ -110,6 +110,11 @@ def badge(request, username, signature, tag):
         if check.get_status() == "down":
             status = "down"
             break
+
+        # if status == "up":
+        #     if check.reverse_grace_period():
+        #         status = "early"
+        #     status = "Too early"
 
     svg = get_badge_svg(tag, status)
     return HttpResponse(svg, content_type="image/svg+xml")
