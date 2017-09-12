@@ -21,13 +21,13 @@ class Command(BaseCommand):
         now = timezone.now()
         going_down = query.filter(alert_after__lt=now, status="up")
         going_up = query.filter(alert_after__gt=now, status="down")
-
         # query for checks that have a nag time less than current time and their status is down
         nagging = query.filter(next_nag_time__lt=now, status="nag")
         # next_nag_time__lt=now,
-
+        early_ping = query.filter(status="often")
         # Don't combine this in one query so Postgres can query using index:
-        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging.iterator())
+        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging.iterator()) + list(often.iterator())
+
         if not checks:
             return False
 
