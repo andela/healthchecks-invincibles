@@ -118,6 +118,7 @@ class Check(models.Model):
             if self.next_nag_time < now:
                 return "nag"
 
+
         return "down"
 
     def in_grace_period(self):
