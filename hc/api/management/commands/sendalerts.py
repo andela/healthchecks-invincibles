@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = 'Sends UP/DOWN email alerts'
+    help = 'Sends UP/DOWN/OFTEN email alerts'
 
     def handle_many(self):
         """ Send alerts for many checks simultaneously. """
@@ -24,10 +24,10 @@ class Command(BaseCommand):
         # query for checks that have a nag time less than current time and their status is down
         nagging = query.filter(next_nag_time__lt=now, status="nag")
         # next_nag_time__lt=now,
-        early_ping = query.filter(status="often")
+        early_ping = query.filter(often=True)
         # Don't combine this in one query so Postgres can query using index:
-        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging.iterator()) + list(often.iterator())
-
+        checks = list(going_down.iterator()) + list(going_up.iterator()) \
+        + list(nagging.iterator()) + list(early_ping.iterator())
         if not checks:
             return False
 
@@ -48,6 +48,7 @@ class Command(BaseCommand):
         # Save the new status. If sendalerts crashes,
         # it won't process this check again.
         check.status = check.get_status()
+        check.often = False
         check.save()
 
         tmpl = "\nSending alert, status=%s, code=%s\n"
@@ -56,7 +57,8 @@ class Command(BaseCommand):
         for ch, error in errors:
             self.stdout.write("ERROR: %s %s %s\n" % (ch.kind, ch.value, error))
 
-        # check if a check is down and if it is, update the next time to send a nag alert to equal current
+        # check if a check is down and if it is
+        # update the next time to send a nag alert to equal current
         # time plus the nag interval
         if check.status == "down":
             now = timezone.now()
