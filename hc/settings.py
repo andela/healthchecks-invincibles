@@ -113,8 +113,6 @@ SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 if os.getcwd() == "/app":
     from dj_database_url import parse
     DATABASE_URL = os.getenv('DATABASE_URL')
-
-    import pdb; pdb.set_trace()
     DATABASES = {
         "default": parse(
             DATABASE_URL,
