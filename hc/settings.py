@@ -64,7 +64,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': [
+            'https://stackoverflow.com/questions/12169228/heroku-toolbelt-specify-appcontext_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -113,6 +113,7 @@ if os.environ.get("DB") == "mysql":
 if os.getcwd() == "/app":
     from dj_database_url import parse
     DATABASE_URL = os.getenv('DATABASE_URL')
+    SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
     DEBUG = os.getenv('DEBUG')
     DATABASES = {
         "default": parse(
@@ -146,7 +147,6 @@ COMPRESS_OFFLINE = True
 
 # EMAIL_BACKEND = "djmail.backends.default.EmailBackend"
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 # Slack integration -- override these in local_settings
 SLACK_CLIENT_ID = None
