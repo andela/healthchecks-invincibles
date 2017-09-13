@@ -132,7 +132,7 @@ $(function () {
         return false;
     });
 
-    $(".timeout-grace").click(function() {
+    $(".timeout-reverse_grace").click(function() {
         var $this = $(this);
 
         $("#update-timeout-form").attr("action", $this.data("url"));
