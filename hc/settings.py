@@ -114,6 +114,8 @@ if os.getcwd() == "/app":
     from dj_database_url import parse
     DATABASE_URL = os.getenv('DATABASE_URL')
     SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+    SENDGRID_PASSWORD = os.getenv('SENDGRID_PASSWORD')
+    SENDGRID_USERNAME = os.getenv('SENDGRID_USERNAME')
     DEBUG = os.getenv('DEBUG')
     DATABASES = {
         "default": parse(
@@ -146,7 +148,7 @@ STATICFILES_FINDERS = (
 COMPRESS_OFFLINE = True
 
 # EMAIL_BACKEND = "djmail.backends.default.EmailBackend"
-EMAIL_BACKEND = "sgbackend.SendGridBackend"
+EMAIL_BACKEND = 'sgbackend.SendGridBackend'
 
 # Slack integration -- override these in local_settings
 SLACK_CLIENT_ID = None
