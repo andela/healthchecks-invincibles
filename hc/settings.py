@@ -64,7 +64,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
-            'https://stackoverflow.com/questions/12169228/heroku-toolbelt-specify-appcontext_processors': [
+            'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -109,14 +109,12 @@ if os.environ.get("DB") == "mysql":
             'TEST': {'CHARSET': 'UTF8'}
         }
     }
-
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 if os.getcwd() == "/app":
     from dj_database_url import parse
     DATABASE_URL = os.getenv('DATABASE_URL')
-    SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
-    SENDGRID_PASSWORD = os.getenv('SENDGRID_PASSWORD')
-    SENDGRID_USERNAME = os.getenv('SENDGRID_USERNAME')
-    DEBUG = os.getenv('DEBUG')
+
+    import pdb; pdb.set_trace()
     DATABASES = {
         "default": parse(
             DATABASE_URL,
@@ -148,7 +146,7 @@ STATICFILES_FINDERS = (
 COMPRESS_OFFLINE = True
 
 # EMAIL_BACKEND = "djmail.backends.default.EmailBackend"
-EMAIL_BACKEND = 'sgbackend.SendGridBackend'
+EMAIL_BACKEND = "sgbackend.SendGridBackend"
 
 # Slack integration -- override these in local_settings
 SLACK_CLIENT_ID = None
@@ -167,7 +165,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['*']
 
-DEBUG = False
 
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
