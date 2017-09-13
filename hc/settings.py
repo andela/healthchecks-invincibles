@@ -113,6 +113,7 @@ if os.environ.get("DB") == "mysql":
 if os.getcwd() == "/app":
     from dj_database_url import parse
     DATABASE_URL = os.getenv('DATABASE_URL')
+    DEBUG = os.getenv('DEBUG')
     DATABASES = {
         "default": parse(
             DATABASE_URL,
