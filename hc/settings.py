@@ -109,7 +109,9 @@ if os.environ.get("DB") == "mysql":
             'TEST': {'CHARSET': 'UTF8'}
         }
     }
+
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+
 if os.getcwd() == "/app":
     from dj_database_url import parse
     DATABASE_URL = os.getenv('DATABASE_URL')
@@ -131,6 +133,8 @@ USE_L10N = True
 USE_TZ = True
 
 SITE_ROOT = os.getenv('SITE_ROOT')
+if SITE_ROOT == None:
+    SITE_ROOT = "http://localhost:8000"
 PING_ENDPOINT = SITE_ROOT + "/ping/"
 PING_EMAIL_DOMAIN = HOST
 STATIC_URL = '/static/'
