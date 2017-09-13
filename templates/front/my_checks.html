@@ -28,6 +28,18 @@
         {% endfor %}
     </div>
     {% endif %}
+    <ul class="nav nav-tabs">
+      <li {% if page == "checks" %}
+        class="active"
+        {% endif %}>
+          <a href="{% url 'hc-checks' %}">ALL</a>
+      </li>
+      <li {% if page == "unresolved" %}
+        class="active"
+        {% endif %}>
+        <a href="{% url 'hc-unresolved-checks' %}">UNRESOLVED</a>
+      </li>
+    </ul>
 
 </div>
 <div class="row">
@@ -38,16 +50,23 @@
         {% include "front/my_checks_mobile.html" %}
         {% include "front/my_checks_desktop.html" %}
     {% else %}
-    <div class="alert alert-info">You don't have any checks yet.</div>
+        {% if page == "checks" %}
+            <div class="alert alert-info">You don't have any checks yet.</div>
+        {% endif %}
+        {% if page == "unresolved" %}
+            <div class="alert alert-info">Woohoo!! You don't have any unresolved checks.</div>
+        {% endif %}
     {% endif %}
     </div>
 </div>
 <div class="row">
     <div class="col-sm-12">
-        <form method="post" action="{% url 'hc-add-check' %}" class="text-center">
-            {% csrf_token %}
-            <input type="submit" class="btn btn-primary btn-lg" value="Add Check">
-        </form>
+        {% if not page == "unresolved" %}
+            <form method="post" action="{% url 'hc-add-check' %}" class="text-center">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary btn-lg" value="Add Check">
+            </form>
+        {% endif %}
     </div>
 </div>
 
