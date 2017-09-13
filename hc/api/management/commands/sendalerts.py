@@ -26,8 +26,7 @@ class Command(BaseCommand):
         # next_nag_time__lt=now,
         early_ping = query.filter(often=True)
         # Don't combine this in one query so Postgres can query using index:
-        checks = list(going_down.iterator()) + list(going_up.iterator()) \
-        + list(nagging.iterator()) + list(early_ping.iterator())
+        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging.iterator()) + list(early_ping.iterator())
         if not checks:
             return False
 
