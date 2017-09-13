@@ -1,5 +1,6 @@
 appnope==0.1.0
 bleach==2.0.0
+astroid==1.5.3
 boto==2.48.0
 braintree==3.38.0
 coverage==4.4.1
