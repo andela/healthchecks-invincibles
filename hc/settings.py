@@ -113,6 +113,7 @@ if os.environ.get("DB") == "mysql":
 if os.getcwd() == "/app":
     from dj_database_url import parse
     DATABASE_URL = os.getenv('DATABASE_URL')
+    SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
     DATABASES = {
         "default": parse(
             DATABASE_URL,
