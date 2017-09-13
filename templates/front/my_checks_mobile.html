@@ -29,6 +29,8 @@
                         <span class="label label-default">PAUSED</span>
                     {% elif check.in_grace_period %}
                         <span class="label label-warning">LATE</span>
+                    {% elif check.get_status == "often" %}
+                        <span class="label icon-often">OFTEN</span>
                     {% elif check.get_status == "up" %}
                         <span class="label label-success">UP</span>
                     {% elif check.get_status == "down" %}
