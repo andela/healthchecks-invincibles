@@ -43,8 +43,9 @@ class Command(BaseCommand):
         # Save the new status. If sendalerts crashes,
         # it won't process this check again.
         check.status = check.get_status()
-        check.save()
-
+        if check.get_status == "down":
+            for i in range(1, 10):
+                errors = check.send_alert()
         tmpl = "\nSending alert, status=%s, code=%s\n"
         self.stdout.write(tmpl % (check.status, check.code))
         errors = check.send_alert()
