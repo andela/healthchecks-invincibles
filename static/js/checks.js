@@ -165,7 +165,7 @@ $(function () {
         $("#my-checks-tags button.checked").each(function(index, el) {
             checked.push(el.textContent);
         });
-
+    
         // No checked tags: show all
         if (checked.length == 0) {
             $("#checks-table tr.checks-row").show();
@@ -218,7 +218,7 @@ $(function () {
             e.target.textContent = "copy";
         }, 300);
     })
-
+    
     clipboard.on('success', function(e) {
         e.trigger.textContent = "copied!";
         e.clearSelection();
