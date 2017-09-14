@@ -157,6 +157,8 @@ def profile(request):
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
                 profile.reports_allowed = form.cleaned_data["reports_allowed"]
+                profile.reports_allowed_weekly = form.cleaned_data["reports_allowed_weekly"]
+                profile.reports_allowed_daily = form.cleaned_data["reports_allowed_daily"]
                 profile.save()
                 messages.success(request, "Your settings have been updated!")
         elif "invite_team_member" in request.POST:
@@ -254,6 +256,8 @@ def unsubscribe_reports(request, username):
 
     user = User.objects.get(username=username)
     user.profile.reports_allowed = False
+    user.profile.reports_allowed_weekly = False
+    user.profile.reports_allowed_daily = False
     user.profile.save()
 
     return render(request, "accounts/unsubscribed.html")
