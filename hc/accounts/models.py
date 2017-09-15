@@ -68,6 +68,7 @@ class Profile(models.Model):
         # reset next report date first:
         now = timezone.now()
         # self.next_report_date = now + timedelta(days=30)
+        arrow
         self.next_report_date = now + timedelta(days=self.determine_next_report())
         self.save()
 
