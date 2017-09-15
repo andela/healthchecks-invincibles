@@ -11,6 +11,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from hc.lib import emails
+import arrow
 
 
 class Profile(models.Model):
@@ -67,6 +68,7 @@ class Profile(models.Model):
         # reset next report date first:
         now = timezone.now()
         # self.next_report_date = now + timedelta(days=30)
+        arrow
         self.next_report_date = now + timedelta(days=self.determine_next_report())
         self.save()
 
