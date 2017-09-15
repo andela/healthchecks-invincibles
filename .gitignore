@@ -13,7 +13,7 @@ static/.DS_Store
 .idea/healthchecks-invincibles.iml
 .idea/misc.xml
 .idea/modules.xml
-.idea/worksgpace.xml
+.idea/workspace.xml
 solution.py
 .vscode
 healthchecks-venv/
