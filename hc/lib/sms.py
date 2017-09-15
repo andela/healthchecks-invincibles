@@ -16,7 +16,7 @@ def send_confirmation_code(to_number):
     verification_code = generate_code()
     send_sms(to_number, verification_code)
     # request.session['verification_code'] = verification_code
-    # return verification_code
+    return verification_code
 
 
 def generate_code():
@@ -24,5 +24,8 @@ def generate_code():
 
 
 def alert(to_number, ctx):
-    body = "Check %s has gone %s" %(ctx['check'].code, ctx['check'].status)
+    if ctx['check'].name:
+        body = "Check %s with code %s has gone %s" % (ctx['check'].name, ctx['check'].code, ctx['check'].status)
+    else:
+        body = "Check with code %s has gone %s" %(ctx['check'].code, ctx['check'].status)
     return send_sms(to_number, body)
