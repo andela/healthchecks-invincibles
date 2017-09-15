@@ -15,3 +15,4 @@ static/.DS_Store
 .idea/modules.xml
 .idea/workspace.xml
 solution.py
+.vscode

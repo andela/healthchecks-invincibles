@@ -244,6 +244,17 @@ powershell.exe -ExecutionPolicy bypass -File C:\Scripts\healthchecks.ps1
             sends you an alert.
         </td>
     </tr>
+    <tr>
+        <td>
+            <span class="status icon-bullhorn"></span>
+        </td>
+        <td>
+            <strong>Nagging.</strong>
+            The has been down for time equivalent to <strong>Nag Interval</strong>. Nagging alerts are sent each after the <strong>Nag Interval</strong>.
+            When check goes from "Down" to "Nag", healthchecks.io
+            sends you an alert.
+        </td>
+    </tr>
 </table>
 
 {% endblock %}
