@@ -25,6 +25,8 @@
                 <span class="status icon-grace"></span>
             {% elif check.get_status == "up" %}
                 <span class="status icon-up"></span>
+            {% elif check.status == "nag" %}
+                <span class="status icon-bullhorn"></span>
             {% elif check.get_status == "down" %}
                 <span class="status icon-down"></span>
             {% endif %}

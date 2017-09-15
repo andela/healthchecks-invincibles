@@ -23,7 +23,8 @@ class Command(BaseCommand):
         going_up = query.filter(alert_after__gt=now, status="down")
 
         # query for checks that have a nag time less than current time and their status is down
-        nagging = query.filter(next_nag_time__lt=now, status="down")
+        nagging = query.filter(next_nag_time__lt=now, status="nag")
+        # next_nag_time__lt=now,
 
         # Don't combine this in one query so Postgres can query using index:
         checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging.iterator())
@@ -47,15 +48,6 @@ class Command(BaseCommand):
         # Save the new status. If sendalerts crashes,
         # it won't process this check again.
         check.status = check.get_status()
-
-        # check if a check is down and if it is, update the next time to send a nag alert to equal current
-        # time plus the nag interval
-        if check.status == "down":
-            now = timezone.now()
-            nag_interval = check.nag_time 
-            new_nag_timestamp = now + nag_interval
-            check.next_nag_time = new_nag_timestamp
-            
         check.save()
 
         tmpl = "\nSending alert, status=%s, code=%s\n"
@@ -63,6 +55,23 @@ class Command(BaseCommand):
         errors = check.send_alert()
         for ch, error in errors:
             self.stdout.write("ERROR: %s %s %s\n" % (ch.kind, ch.value, error))
+
+        # check if a check is down and if it is, update the next time to send a nag alert to equal current
+        # time plus the nag interval
+        if check.status == "down":
+            now = timezone.now()
+            nag_interval = check.nag_time
+            new_nag_timestamp = now + nag_interval
+            check.next_nag_time = new_nag_timestamp
+            check.status = "nag"
+
+        elif check.status == "nag":
+            now = timezone.now()
+            nag_interval = check.nag_time
+            new_nag_timestamp = now + nag_interval
+            check.next_nag_time = new_nag_timestamp
+
+        check.save()
 
         connection.close()
         return True
