@@ -11,7 +11,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from hc.api import transports
-from hc.lib import emails
+from hc.lib import emails, sms
 
 STATUSES = (
     ("up", "Up"),
@@ -166,6 +166,9 @@ class Channel(models.Model):
         verify_link = settings.SITE_ROOT + verify_link
         emails.verify_email(self.value, {"verify_link": verify_link})
 
+    def send_verify_sms(self, to):
+        sms.send_confirmation_code(to)
+
     @property
     def transport(self):
         if self.kind == "email":
@@ -184,6 +187,8 @@ class Channel(models.Model):
             return transports.Pushbullet(self)
         elif self.kind == "po":
             return transports.Pushover(self)
+        elif self.kind == "phone":
+            return transports.SMS(self)
         else:
             raise NotImplementedError("Unknown channel kind: %s" % self.kind)
 

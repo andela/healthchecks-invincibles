@@ -318,6 +318,12 @@ def do_add_channel(request, data):
         if channel.kind == "email":
             channel.send_verify_link()
 
+        if channel.kind == "phone":
+            channel.send_verify_sms(channel.value)
+            ctx = {"page": "channels"}
+            # print (request.session['verification_code'])
+            return render(request, "integrations/sms_verify_number.html", ctx)
+
         return redirect("hc-channels")
     else:
         return HttpResponseBadRequest()
