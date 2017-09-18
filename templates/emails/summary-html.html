@@ -30,6 +30,7 @@
     .up { background: #5cb85c; }
     .grace { background: #f0ad4e; }
     .down { background: #d9534f; }
+    .often { background: #2B0202; }
 
 
     .unnamed {
@@ -61,6 +62,8 @@
                 <span class="badge new">PAUSED</span>
             {% elif check.in_grace_period %}
                 <span class="badge grace">LATE</span>
+            {% elif check.get_status == "often" %}
+                <span class="badge often">OFTEN</span>
             {% elif check.get_status == "up" %}
                 <span class="badge up">UP</span>
             {% elif check.get_status == "down" %}

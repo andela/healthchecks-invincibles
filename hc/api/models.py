@@ -18,7 +18,8 @@ STATUSES = (
     ("down", "Down"),
     ("new", "New"),
     ("paused", "Paused"),
-    ("nag", "nag")
+    ("nag", "nag"),
+    ("often", "Often")
 )
 DEFAULT_TIMEOUT = td(days=1)
 DEFAULT_GRACE = td(hours=1)
@@ -53,9 +54,11 @@ class Check(models.Model):
     n_pings = models.IntegerField(default=0)
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
+    often = models.BooleanField(default=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
     nag_time = models.DurationField(default=DEFAULT_NAG_TIME)
     next_nag_time = models.DateTimeField(null=True, blank=True)
+    often = models.BooleanField(default=False)
 
     def name_then_code(self):
         if self.name:
@@ -73,7 +76,7 @@ class Check(models.Model):
         return "%s@%s" % (self.code, settings.PING_EMAIL_DOMAIN)
 
     def send_alert(self):
-        if self.status not in ("up", "down", "nag"):
+        if self.status not in ("up", "down", "nag", "often"):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
         errors = []
@@ -85,10 +88,27 @@ class Check(models.Model):
         return errors
 
     def get_status(self):
-        if self.status in ("new", "paused"):
+        if self.status in ("new", "paused", "often"):
             return self.status
 
         now = timezone.now()
+
+        ### Use the 'ping_set' dictionary to get the last 2 pings
+        # The dict should have 2 or more items
+        if len(self.ping_set.all()) > 2:
+            # Set the reversed grace period to whatever fraction of 'timeout' you want it to be
+            reversed_grace_period = self.timeout/5
+            # Arrange the pings in order in which they were created, descending
+            all_pings = self.ping_set.all().order_by('-created')
+            # Get the second last ping
+            second_last_ping = all_pings[1].created
+
+            if self.last_ping + self.timeout + self.grace > now:
+                # Set condition to check if ping runs before the set 'timeout'
+                if (self.last_ping - second_last_ping) < self.timeout - reversed_grace_period:
+                    return "often"
+                else:
+                    return "up"
 
         if self.last_ping + self.timeout + self.grace > now:
             return "up"
@@ -103,7 +123,6 @@ class Check(models.Model):
     def in_grace_period(self):
         if self.status in ("new", "paused"):
             return False
-
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends

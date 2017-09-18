@@ -60,6 +60,10 @@
 .icon-settings:before {
   content: "\e8b8";
 }
-.icon-bullhorn:before {
+.icon-often:before {
+  content: "\2757";
+}.icon-often:before {
+  content: "\2757";
+}.icon-bullhorn:before {
   content: "\1f4e2";
 }

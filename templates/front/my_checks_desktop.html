@@ -29,6 +29,9 @@
                 <span class="status icon-bullhorn"></span>
             {% elif check.get_status == "down" %}
                 <span class="status icon-down"></span>
+            {% elif check.get_status == "often" %}
+                <span class="status icon-often" data-toggle="tooltip"
+                title="Received ping too early"></span>
             {% endif %}
         </td>
         <td class="name-cell">
