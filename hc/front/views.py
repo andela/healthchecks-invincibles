@@ -151,6 +151,7 @@ def add_check(request):
 @login_required
 @uuid_or_400
 def update_name(request, code):
+    print("started updat ename")
     assert request.method == "POST"
 
     check = get_object_or_404(Check, code=code)
@@ -161,6 +162,9 @@ def update_name(request, code):
     if form.is_valid():
         check.name = form.cleaned_data["name"]
         check.tags = form.cleaned_data["tags"]
+        if request.POST.get("high_priority"):
+            check.high_priority = True
+            
         check.save()
 
     return redirect("hc-checks")

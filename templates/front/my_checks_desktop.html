@@ -2,7 +2,11 @@
 <table id="checks-table" class="table hidden-xs">
     <tr>
         <th></th>
-        <th class="th-name">Name</th>
+        <th class="th-name">
+            Name <br />
+            <span class="checks-subline">Tags</span> <br />
+            <span class="checks-sub-subline">Priority</span>
+        </th>
         <th>Ping URL</th>
         <th class="th-period">
             Period <br />
@@ -42,7 +46,10 @@
                 <div>{{ check.name|default:"unnamed" }}</div>
                 {% for tag in check.tags_list %}
                 <span class="label label-tag">{{ tag }}</span>
-                {% endfor %}
+                {% endfor %} <br />
+                {% if check.high_priority %}
+                    <span>High priority</span>
+                {% endif %}
             </div>
         </td>
         <td class="url-cell">
