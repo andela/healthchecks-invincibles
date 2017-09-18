@@ -145,6 +145,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
+#COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 
 EMAIL_BACKEND = "sgbackend.SendGridBackend"
@@ -166,7 +167,6 @@ PUSHBULLET_CLIENT_SECRET = None
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['*']
-
 
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
