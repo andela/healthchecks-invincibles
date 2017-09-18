@@ -59,6 +59,7 @@ class Check(models.Model):
     nag_time = models.DurationField(default=DEFAULT_NAG_TIME)
     next_nag_time = models.DateTimeField(null=True, blank=True)
     often = models.BooleanField(default=False)
+    high_priority = models.BooleanField(default=False)
 
     def name_then_code(self):
         if self.name:
