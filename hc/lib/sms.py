@@ -15,7 +15,6 @@ def send_sms(to, body):
 def send_confirmation_code(to_number):
     verification_code = generate_code()
     send_sms(to_number, verification_code)
-    # request.session['verification_code'] = verification_code
     return verification_code
 
 
