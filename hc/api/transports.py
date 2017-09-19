@@ -5,7 +5,7 @@ import json
 import requests
 from six.moves.urllib.parse import quote
 
-from hc.lib import emails, sms
+from hc.lib import emails, sms, telegram
 
 
 def tmpl(template_name, **ctx):
@@ -62,20 +62,25 @@ class Email(Transport):
 
 class SMS(Transport):
     def notify(self, check):
-        # if not self.channel.email_verified:
-        #     return "Email not verified"
-        # show_upgrade_note = False
-        # if settings.USE_PAYMENTS and check.status == "up":
-        #     if not check.user.profile.team_access_allowed:
-        #         show_upgrade_note = True
+
+        ctx = {
+            "check": check,
+            "checks": self.checks(),
+            "now": timezone.now()
+        }
+        return sms.alert(self.channel.value, ctx)
+
+
+class Telegram(Transport):
+    def notify(self, check):
 
         ctx = {
             "check": check,
             "checks": self.checks(),
             "now": timezone.now(),
-            # "show_upgrade_note": show_upgrade_note
         }
-        return sms.alert(self.channel.value, ctx)
+        return telegram.alert(self.channel.value, ctx)
+
 
 class HttpTransport(Transport):
 

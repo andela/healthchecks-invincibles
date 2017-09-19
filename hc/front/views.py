@@ -19,6 +19,7 @@ from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm)
 from .models import Faq, Video
 from .forms import FaqForm
+from hc.lib.telegram import create_telegram_integration
 
 # from itertools recipes:
 def pairwise(iterable):
@@ -313,6 +314,12 @@ def do_add_channel(request, data):
     if form.is_valid():
         channel = form.save(commit=False)
         channel.user = request.team.user
+        if channel.kind == "telegram":
+            req = create_telegram_integration(channel.value)
+            if isinstance(req, int):
+                channel.value = req
+            else:
+                channel=False
         channel.save()
 
         channel.assign_all_checks()
@@ -323,7 +330,6 @@ def do_add_channel(request, data):
         if channel.kind == "phone":
             channel.send_verify_sms(channel.value)
             ctx = {"page": "channels"}
-            # print (request.session['verification_code'])
             return render(request, "integrations/sms_verify_number.html", ctx)
 
         return redirect("hc-channels")
@@ -392,6 +398,10 @@ def add_sms(request):
     ctx = {"page": "channels"}
     return render(request, "integrations/add_sms.html", ctx)
 
+@login_required
+def add_telegram(request):
+    ctx = {"page": "channels"}
+    return render(request, "integrations/add_telegram.html", ctx)
 
 @login_required
 def add_webhook(request):

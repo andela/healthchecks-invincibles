@@ -27,7 +27,7 @@ DEFAULT_NAG_TIME = td(minutes=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
-                 ("victorops", "VictorOps"), ("phone", "Phone"))
+                 ("victorops", "VictorOps"), ("phone", "Phone"), ("telegram", "Telegram"))
 
 PO_PRIORITIES = {
     -2: "lowest",
@@ -217,6 +217,8 @@ class Channel(models.Model):
             return transports.Pushover(self)
         elif self.kind == "phone":
             return transports.SMS(self)
+        elif self.kind == "telegram":
+            return transports.Telegram(self)
         else:
             raise NotImplementedError("Unknown channel kind: %s" % self.kind)
 
