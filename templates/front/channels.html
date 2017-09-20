@@ -48,9 +48,6 @@
                 {% elif ch.kind == "phone" %}
                     <span class="preposition">to</span>
                     {{ ch.value }}
-                    {% if not ch.phone_verified %}
-                        <span class="channel-unconfirmed">(unconfirmed)</span>
-                    {% endif %}
                 {% elif ch.kind == "pd" %}
                     <span class="preposition">API key</span>
                     {{ ch.value }}
