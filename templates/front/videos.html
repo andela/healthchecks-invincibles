@@ -1,23 +1,25 @@
 {% extends "base.html" %}
 {% load compress staticfiles %}
 
-<!-- {% load cache %}
+{% load cache %}
 {% cache 500 sidebar %}
     .. sidebar ..
-{% endcache %} -->
+{% endcache %}
 
 {% load embed_video_tags %}
 {% block content%}
-The video tag:
 <!--You can use variables (with embedding) -->
 <!-- Or you can just embed like so {% video item.video 'small' %} -->
 {% for video in videos%}
-<br>{{video.title}}</br>
+<h1><br>{{video.title}}</br></h1>
 {% video video.video as my_video %}
-
-  <br>URL: {{ my_video.url }}</br>
-  <br>Thumbnail: {{ my_video.thumbnail }}</br>
-  <br>Backend: {{ my_video.backend }}</br>
+<h2>
+  Introduction to Healthchecks Onboarding(Help Videos)
+</h2>
+<p>
+    In this video, I’m going to define and explain the benefits of healthchecks onboarding.</br>
+    I'll also show you a demo of creating checks, what Cron Jobs are etc so that you can use the system on your own.</br>
+</p>
 
   {% video my_video "medium" %}
 {% endvideo %}
@@ -31,8 +33,6 @@ The video tag:
 
   {% video my_video "medium" %}
 {% endvideo %}
-
-<a href="{% url 'hc-faqs' %}">FAQ</a>
 
 {% endblock %}
 
