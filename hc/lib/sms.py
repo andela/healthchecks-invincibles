@@ -12,16 +12,6 @@ def send_sms(to, body):
         body=body)
 
 
-def send_confirmation_code(to_number):
-    verification_code = generate_code()
-    send_sms(to_number, verification_code)
-    return verification_code
-
-
-def generate_code():
-    return str(random.randrange(100000, 999999))
-
-
 def alert(to_number, ctx):
     if ctx['check'].name:
         body = "Check %s with code %s has gone %s" % (ctx['check'].name, ctx['check'].code, ctx['check'].status)

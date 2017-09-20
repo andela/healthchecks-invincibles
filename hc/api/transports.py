@@ -60,17 +60,6 @@ class Email(Transport):
         emails.alert(self.channel.value, ctx)
 
 
-class SMS(Transport):
-    def notify(self, check):
-
-        ctx = {
-            "check": check,
-            "checks": self.checks(),
-            "now": timezone.now()
-        }
-        return sms.alert(self.channel.value, ctx)
-
-
 class Telegram(Transport):
     def notify(self, check):
 
@@ -110,6 +99,19 @@ class HttpTransport(Transport):
 
     def post_form(self, url, data):
         return self.request("post", url, data=data)
+
+
+class SMS(HttpTransport):
+
+    def notify(self, check):
+
+        ctx = {
+            "check": check,
+            "checks": self.checks(),
+            "now": timezone.now()
+        }
+        return sms.alert(self.channel.value, ctx)
+
 
 
 class Webhook(HttpTransport):

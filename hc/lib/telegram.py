@@ -3,8 +3,7 @@ import os, requests, json
 
 
 bot = TelegramBot(os.getenv('TELEGRAM_BOT_TOKEN'))
-updates = json.loads(requests.get('https://api.telegram.org/bot'+
-                                  str(os.getenv('TELEGRAM_BOT_TOKEN'))+'/getUpdates').text)
+updates = json.loads(requests.get('https://api.telegram.org/bot'+str(os.getenv('TELEGRAM_BOT_TOKEN'))+'/getUpdates').text)
 
 
 def create_telegram_integration(username):
