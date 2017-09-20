@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load compress staticfiles %}
+
+<!-- {% load cache %}
+{% cache 500 sidebar %}
+    .. sidebar ..
+{% endcache %} -->
+
+{% load embed_video_tags %}
+{% block content%}
+The video tag:
+<!--You can use variables (with embedding) -->
+<!-- Or you can just embed like so {% video item.video 'small' %} -->
+{% for video in videos%}
+<br>{{video.title}}</br>
+{% video video.video as my_video %}
+
+  <br>URL: {{ my_video.url }}</br>
+  <br>Thumbnail: {{ my_video.thumbnail }}</br>
+  <br>Backend: {{ my_video.backend }}</br>
+
+  {% video my_video "medium" %}
+{% endvideo %}
+
+{% endfor %}
+{% video video.video.video as my_video %}
+
+  URL: {{ my_video.url }}
+  Thumbnail: {{ my_video.thumbnail }}
+  Backend: {{ my_video.backend }}
+
+  {% video my_video "medium" %}
+{% endvideo %}
+
+<a href="{% url 'hc-faqs' %}">FAQ</a>
+
+{% endblock %}
+
+<!-- Default sizes are tiny (420x315), small (480x360), medium (640x480),
+    large (960x720) and huge (1280x960). You can set your own size: 
+    Or embed shortcut:
+    {% video my_video '640x480' %} -->

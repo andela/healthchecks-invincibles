@@ -1,5 +1,6 @@
 from django import forms
 from hc.api.models import Channel
+from .models import Faq, Video
 
 
 class NameTagsForm(forms.Form):
@@ -42,3 +43,13 @@ class AddWebhookForm(forms.Form):
 
     def get_value(self):
         return "{value_down}\n{value_up}".format(**self.cleaned_data)
+
+class FaqForm(forms.ModelForm):
+    class Meta:
+        model = Faq
+        fields = ('question', 'answer')
+
+class VideoForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = ('title', 'video')
