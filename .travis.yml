@@ -11,7 +11,6 @@ env:
 addons:
   postgresql: "9.4"
 script:
-  - python manage.py migrate
   - coverage run --omit=*/tests/* --source=hc manage.py test
 after_success: coveralls
 cache: pip
