@@ -34,6 +34,13 @@
         {% endif %}>
           <a href="{% url 'hc-checks' %}">ALL</a>
       </li>
+
+      <li {% if page == "departments" %}
+        class="active"
+        {% endif %}>
+          <a href="{% url 'hc-department-checks' %}">DEPARTMENTS</a>
+      </li>
+
       <li {% if page == "unresolved" %}
         class="active"
         {% endif %}>
@@ -43,10 +50,29 @@
 
 </div>
 <div class="row">
-    <div class="col-sm-12">
+    <form class="col-sm-12">
 
 
-    {% if checks %}
+    {% if checks or page == "departments" %}
+        {% if page == "departments" %}
+        <div class="row">
+        <form method="get" action="{% url 'hc-department-checks' %}" class="text-center">
+        <div class="col-sm-6">
+
+        <select id="choose-department"
+                name="department"
+                class="form-control">
+            {% for department in departments %}
+            <option value="{{department.id}}">{{ department }}</option>
+            {% endfor %}
+        </select>
+         </div>
+        <span class="help-block">
+            <input type="submit" class="btn btn-default btn-sm" value="Filter by Department">
+        </span>
+            </form>
+        </div>
+        {% endif %}
         {% include "front/my_checks_mobile.html" %}
         {% include "front/my_checks_desktop.html" %}
     {% else %}
@@ -57,8 +83,15 @@
             <div class="alert alert-info">Woohoo!! You don't have any unresolved checks.</div>
         {% endif %}
     {% endif %}
+    </form>
     </div>
-</div>
+<!--<div class="row">-->
+    <!--<div class="col-sm-12">-->
+        <!--{% if not page == "departments" %}-->
+
+        <!--{% endif %}-->
+    <!--</div>-->
+<!--</div>-->
 <div class="row">
     <div class="col-sm-12">
         {% if not page == "unresolved" %}
@@ -116,6 +149,24 @@
                                 <span class="help-block">
                                     Optionally, assign tags for easy filtering.
                                     Separate multiple tags with spaces.
+                                </span>
+                            </div>
+                        </div>
+                    <div class="form-group">
+                            <label for="update-tags-input" class="col-sm-2 control-label">
+                                Department
+                            </label>
+                            <div class="col-sm-9">
+                                <select
+                                    id="update-department-input"
+                                    name="department"
+                                    class="form-control">
+                                    {% for department in departments %}
+                                    <option value="{{department.id}}">{{ department }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="help-block">
+                                    Select a department the process belongs
                                 </span>
                             </div>
                         </div>

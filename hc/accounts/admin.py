@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.urls import reverse
 from hc.accounts.models import Profile
-from hc.api.models import Channel, Check
+from hc.api.models import Channel, Check, Department
 
 
 @admin.register(Profile)
@@ -73,7 +73,12 @@ class HcUserAdmin(UserAdmin):
             user.profile.send_report()
 
         self.message_user(request, "%d email(s) sent" % qs.count())
+  
+        
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ['department_name']
 
 
 admin.site.unregister(User)
 admin.site.register(User, HcUserAdmin)
+admin.site.register(Department, DepartmentAdmin)
