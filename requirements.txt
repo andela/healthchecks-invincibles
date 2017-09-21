@@ -8,7 +8,7 @@ cssselect==1.0.1
 cssutils==1.0.2
 dj-database-url==0.4.2
 decorator==4.1.2
-Django==1.10
+Django==1.11.5
 django-appconf==1.0.1
 django-compressor==2.1
 django-ses-backend==0.1.1
@@ -76,3 +76,10 @@ pylint==1.7.2
 python-http-client==3.0.0
 wrapt==1.10.11
 arrow
+certifi==2017.7.27.1
+chardet==3.0.4
+django-embed-video==1.1.2
+idna==2.6
+ipdb==0.10.3
+pytz==2017.2
+urllib3==1.22

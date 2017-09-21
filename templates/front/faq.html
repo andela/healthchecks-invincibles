@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load compress staticfiles %}
+
+{% block title %}FAQ's - healthchecks.io{% endblock %}
+{%block content%}
+<div style="text-align: center">
+        <h1>Frequently Asked Questions</h1>
+</div>
+{%if faq|length <= 0 %}
+No values
+{%endif%}
+
+{%for faq in faq%}
+<div>
+    <h2>{{faq.question}}</h2>
+    <p>{{faq.answer}}</p>
+</div>
+
+{%endfor%}
+
+{%endblock%}

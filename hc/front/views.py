@@ -17,7 +17,8 @@ from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm)
-
+from .models import Faq, Video
+from .forms import FaqForm
 
 # from itertools recipes:
 def pairwise(iterable):
@@ -568,3 +569,24 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+# Help Center View
+def faq(request):
+    myFaqs = Faq.objects.all()
+    return render(request, "front/faq.html", {'faq': myFaqs})
+
+def video(request):
+    myVideos = Video.objects.all()
+    return render(request, "front/videos.html", {'videos': myVideos})
+
+def addFaq(request):
+    if request.method == 'POST':
+        form = FaqForm(request.POST)
+        if form.is_valid():
+            faq = form.save(commit=False)
+            faq.save()
+            return redirect('hc-faqs')
+    else:
+        form = FaqForm
+    return render(request, "front/createfaq.html" , {'form': form})
+
