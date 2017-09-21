@@ -8,13 +8,10 @@
 
 <form method="POST" action="{% url 'hc-edit-blog' blog.id%}">
   {% csrf_token %}
-  <input value="" type="hidden">
   <input class="form-control" type="text" value="{{ blog.title }}" placeholder="blog-title" name="blog-title"> <br><br>
   <textarea class="form-control" rows="4" cols="80" placeholder="blog-post"name="blog-post">{{ blog.blog_post }}</textarea><br><br>
   <button class="btn btn-primary btn-lg" type="submit">Update</button>
 </form>
-{% else %}
-<h1>Nothing</h1>
 {% endif %}
 
 {% endblock %}
