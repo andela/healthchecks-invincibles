@@ -1,14 +1,16 @@
 from twilio.rest import Client
 import os
-import random
+account_sid=os.getenv('TWILIO_ACCOUNT_SID')
+auth_token=os.getenv('TWILIO_AUTH_TOKEN')
+twilio_number=os.getenv('TWILIO_NUMBER')
 
-client = Client(os.getenv('TWILIO_ACCOUNT_SID'), os.getenv('TWILIO_AUTH_TOKEN'))
+client = Client(account_sid, auth_token)
 
 
 def send_sms(to, body):
-    return client.messages.create(
+    client.messages.create(
         to=to,
-        from_=os.getenv('TWILIO_NUMBER'),
+        from_=twilio_number,
         body=body)
 
 
@@ -17,4 +19,4 @@ def alert(to_number, ctx):
         body = "Check %s with code %s has gone %s" % (ctx['check'].name, ctx['check'].code, ctx['check'].status)
     else:
         body = "Check with code %s has gone %s" %(ctx['check'].code, ctx['check'].status)
-    return send_sms(to_number, body)
+    send_sms(to_number, body)
