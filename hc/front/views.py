@@ -18,6 +18,7 @@ from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm, BlogsForm)
 from hc.front.models import Blogs
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # from itertools recipes:
 def pairwise(iterable):
@@ -139,6 +140,15 @@ def about(request):
 def blogs(request):
     myblogs = Blogs.objects.get
     myblogs = list(Blogs.objects.filter(user=request.team.user))
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(myblogs, 5)
+    try:
+        myblogs = paginator.page(page)
+    except PageNotAnInteger:
+        myblogs = paginator.page(1)
+    except EmptyPage:
+        myblogs = paginator.page(paginator.num_pages)
     ctx = {"blogs" : myblogs}
     return render(request, "front/blog.html", ctx)
 
