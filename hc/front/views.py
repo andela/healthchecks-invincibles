@@ -16,8 +16,8 @@ from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
-
+                            TimeoutForm, BlogsForm)
+from hc.front.models import Blogs
 
 # from itertools recipes:
 def pairwise(iterable):
@@ -134,6 +134,27 @@ def docs_api(request):
 
 def about(request):
     return render(request, "front/about.html", {"page": "about"})
+
+
+def blogs(request):
+    myblogs = Blogs.objects.get
+    myblogs = list(Blogs.objects.filter(user=request.team.user))
+    ctx = {"blogs" : myblogs}
+    return render(request, "front/blog.html", ctx)
+
+def save_blog(request):
+    if request.method == "POST":
+        form = BlogsForm(request.POST)
+        blog_post = form.data["blog-post"]
+        blog_title = form.data["blog-title"]
+        blog = Blogs(blog_post=blog_post, user=request.user, title=blog_title)
+        blog.save()
+        myblogs = list(Blogs.objects.filter(user=request.team.user))
+        ctx = {"blogs" : myblogs}
+        return render(request, "front/blog.html", ctx)
+    return render(request, "front/add_blog.html")
+
+
 
 
 @login_required
