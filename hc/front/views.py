@@ -155,6 +155,12 @@ def save_blog(request):
     return render(request, "front/add_blog.html")
 
 
+def delete_blog(request, id):
+    blog = Blogs.objects.filter(id=id)
+    blog.delete()    
+    return redirect("hc-view-blog")
+
+
 
 
 @login_required
