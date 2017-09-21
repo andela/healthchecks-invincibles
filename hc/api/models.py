@@ -199,11 +199,7 @@ class Channel(models.Model):
         for x in range(0, 3):
             error = self.transport.notify(check) or ""
             if error in ("", "no-op"):  # True
-                print (dir(error))
                 break # Success!
-            break
-
-        # error = "no-op"
 
         if error != "no-op":  # ""
             n = Notification(owner=check, channel=self)
