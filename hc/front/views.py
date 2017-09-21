@@ -154,6 +154,20 @@ def save_blog(request):
         return render(request, "front/blog.html", ctx)
     return render(request, "front/add_blog.html")
 
+def edit_blog(request, id):
+    if request.method == 'POST':
+        form = BlogsForm(request.POST)
+        blog_post = form.data["blog-post"]
+        blog_title = form.data["blog-title"]
+        blog = Blogs.objects.filter(id=id)
+        blog.update(title=blog_title, blog_post=blog_post)
+        return redirect("hc-view-blog")
+    blog = Blogs.objects.filter(id=id).first()
+    ctx = {
+            "blog" : blog
+        }
+    return render(request, "front/edit_blog.html", ctx)
+
 
 def delete_blog(request, id):
     blog = Blogs.objects.filter(id=id)
