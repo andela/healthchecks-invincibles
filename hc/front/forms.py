@@ -54,6 +54,7 @@ class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
         fields = ('title', 'video')
+
 class BlogsForm(forms.Form):
     blog_post = forms.CharField(max_length=58000, required=False)
     blog_title = forms.CharField(max_length=500, required=False)

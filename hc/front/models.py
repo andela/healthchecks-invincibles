@@ -8,6 +8,11 @@ class Blogs(models.Model):
     user = models.TextField()
     title = models.CharField(max_length=200, blank=False)
 
+class Blogs(models.Model):
+    blog_post = models.CharField(max_length=20000, blank=False)
+    user = models.TextField()
+    title = models.CharField(max_length=200, blank=False)
+
 # Create your models here.
 
 class Faq(models.Model):
