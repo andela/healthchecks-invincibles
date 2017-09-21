@@ -1,5 +1,6 @@
 from django import forms
 from hc.api.models import Channel
+from hc.front.models import Blogs
 
 
 class NameTagsForm(forms.Form):
@@ -42,3 +43,7 @@ class AddWebhookForm(forms.Form):
 
     def get_value(self):
         return "{value_down}\n{value_up}".format(**self.cleaned_data)
+
+class BlogsForm(forms.Form):
+    blog_post = forms.CharField(max_length=58000, required=False)
+    blog_title = forms.CharField(max_length=500, required=False)
