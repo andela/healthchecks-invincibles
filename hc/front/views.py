@@ -19,7 +19,9 @@ from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm)
 from .models import Faq, Video
-from .forms import FaqForm
+from .forms import FaqForm, TimeoutForm, BlogsForm
+from hc.front.models import Blogs
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # from itertools recipes:
 def pairwise(iterable):
@@ -157,6 +159,56 @@ def docs_api(request):
 
 def about(request):
     return render(request, "front/about.html", {"page": "about"})
+
+
+def blogs(request):
+    myblogs = Blogs.objects.get
+    myblogs = list(Blogs.objects.filter(user=request.team.user))
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(myblogs, 5)
+    try:
+        myblogs = paginator.page(page)
+    except PageNotAnInteger:
+        myblogs = paginator.page(1)
+    except EmptyPage:
+        myblogs = paginator.page(paginator.num_pages)
+    ctx = {"blogs" : myblogs}
+    return render(request, "front/blog.html", ctx)
+
+def save_blog(request):
+    if request.method == "POST":
+        form = BlogsForm(request.POST)
+        blog_post = form.data["blog-post"]
+        blog_title = form.data["blog-title"]
+        blog = Blogs(blog_post=blog_post, user=request.user, title=blog_title)
+        blog.save()
+        myblogs = list(Blogs.objects.filter(user=request.team.user))
+        ctx = {"blogs" : myblogs}
+        return render(request, "front/blog.html", ctx)
+    return render(request, "front/add_blog.html")
+
+def edit_blog(request, id):
+    if request.method == 'POST':
+        form = BlogsForm(request.POST)
+        blog_post = form.data["blog-post"]
+        blog_title = form.data["blog-title"]
+        blog = Blogs.objects.filter(id=id)
+        blog.update(title=blog_title, blog_post=blog_post)
+        return redirect("hc-view-blog")
+    blog = Blogs.objects.filter(id=id).first()
+    ctx = {
+            "blog" : blog
+        }
+    return render(request, "front/edit_blog.html", ctx)
+
+
+def delete_blog(request, id):
+    blog = Blogs.objects.filter(id=id)
+    blog.delete()    
+    return redirect("hc-view-blog")
+
+
 
 
 @login_required

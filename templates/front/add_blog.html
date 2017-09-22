@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}About - healthchecks.io{% endblock %}
+
+{% block content %}
+
+
+<form method="POST" action="{% url 'hc-save-blog' %}">
+  {% csrf_token %}
+
+  <input class="form-control" type="text" placeholder="blog-title" name="blog-title"> <br><br>
+  <textarea class="form-control" rows="4" cols="80" placeholder="blog-post"name="blog-post"></textarea><br><br>
+  <button class="btn btn-primary btn-lg" type="submit">Submit</button>
+</form>
+
+{% endblock %}
