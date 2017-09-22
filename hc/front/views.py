@@ -1,6 +1,7 @@
 from collections import Counter
 from datetime import timedelta as td
 from itertools import tee
+import json
 
 import requests
 from django.conf import settings
@@ -16,7 +17,7 @@ from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import Department
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
-from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
+from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm, AddShopifyForm,
                             TimeoutForm)
 from .models import Faq, Video
 from .forms import FaqForm
@@ -442,6 +443,63 @@ def add_webhook(request):
 
     ctx = {"page": "channels", "form": form}
     return render(request, "integrations/add_webhook.html", ctx)
+
+@login_required
+def add_shopify(request):
+    message = ''
+    if request.method == "POST":
+        form = AddShopifyForm(request.POST)
+        if form.is_valid():
+            
+            website = request.POST.get("shop", "")
+            website = website + '/admin/webhooks.json'
+            ping_url = request.POST.get("ping_url", "")
+            parts = ping_url.split("/")
+            check_code = parts[-1]
+            username = request.POST.get("api_key","")
+            password = request.POST.get("password","")
+            event = form.get_event()
+            event_text = form.get_displayed_option()
+            
+            data = json.dumps({"webhook": {
+                    "topic": event,
+                    "address": ping_url,
+                    "format": "json"
+                    }})
+
+            response = requests.post(website, data=data, 
+                auth=requests.auth.HTTPBasicAuth(username, password), headers={"Content-type": "application/json"})
+            result = response.json()
+            print(response)
+            print("status code: - " + str(response.status_code))
+
+            if response.status_code == 422:
+                message = "Integration failed. Please check the validity of the information provided. Things to look out for: " \
+                "Make sure the ping url is hosted and correct. Make sure you are not integrating an event that's already integrated. "
+            elif response.status_code == 403:
+                message = "Integration failed. Please ensure that the API Key entered is correct."
+            elif response.status_code == 401:
+                message = "Integration failed. Please ensure that the Password entered is correct."
+            elif response.status_code == 404:
+                message = "Integration failed. Please check that you entered the correct shop website. You can " \
+                "follow the format of the placeholder provided."
+            elif response.status_code == 201:
+                message = "Integration successful."
+
+                channel = Channel(user=request.team.user, kind="shopify")
+                channel.value = event_text
+                channel.save()
+                channel.assign_shopify_checks(check_code)
+
+                return redirect("hc-channels")
+            else:
+                message = "Integration failed. Please cross check the information entered."
+
+    else:
+        form = AddShopifyForm()
+
+    ctx = {"page": "channels", "form": form, "errors": message}
+    return render(request, "integrations/add_shopify.html", ctx)
 
 
 @login_required
