@@ -120,7 +120,6 @@
                         </div>
                         
                         <div class="form-group">
-                            {% with value='False' %}
                             <label for="update-priority-input" class="col-sm-2 control-label">
                                 Priority
                             </label>
@@ -128,14 +127,12 @@
                                 <input
                                     id="update-priority-input"
                                     name="priority"
-                                    {% if value %} checked {% endif %}
-                                    type="checkbox" nbsp;/> High priority {{value}}
-                                    
-                                    <span class="help-block">
-                                        If this check is very important, tick it as a 'high priority' check.
-                                    </span>
+                                    type="checkbox" 
+                                    /> &nbsp; High priority
+                                <span class="help-block">
+                                    If this check is very important, tick it as a 'high priority' check.
+                                </span>
                             </div>
-                            {% endwith %}
                         </div>
                 </div>
                 <div class="modal-footer">

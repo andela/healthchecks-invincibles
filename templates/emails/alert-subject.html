@@ -1,5 +1,7 @@
 {% if check.status == 'nag' %}
 {{ check.name_then_code }} is still down
+{% elif check.status == 'nag' and check.high_priority %}
+High Priority check <strong>{{ check.name_then_code }}</strong> is still down
 {% else %}
 {{ check.name_then_code }} is {{ check.status }}
 {% endif %}

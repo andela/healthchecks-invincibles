@@ -47,9 +47,9 @@
                 <div>{{ check.name|default:"unnamed" }}</div>
                 {% for tag in check.tags_list %}
                 <span class="label label-tag">{{ tag }}</span>
-                {% endfor %} <br />
+                {% endfor %}
                 {% if check.high_priority %}
-                    <span>High priority</span>
+                    <h6>High priority</h6>
                 {% endif %}
             </div>
         </td>

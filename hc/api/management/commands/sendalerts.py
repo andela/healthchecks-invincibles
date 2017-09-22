@@ -23,10 +23,15 @@ class Command(BaseCommand):
         going_up = query.filter(alert_after__gt=now, status="down")
         # query for checks that have a nag time less than current time and their status is down
         nagging = query.filter(next_nag_time__lt=now, status="nag")
-        # next_nag_time__lt=now,
+        # Check if a check receives pings too often
         early_ping = query.filter(often=True)
+        ### For a high priority check, notify a team member if the check is not resolved
+        # First check if team members are present
+        # if team_access and Profile.objects.count() > 1:
+        notify_team = query.filter(status="nag", high_priority=True)
         # Don't combine this in one query so Postgres can query using index:
-        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging.iterator()) + list(early_ping.iterator())
+        checks = list(going_down.iterator()) + list(going_up.iterator()) + list(nagging.iterator()) \
+        + list(early_ping.iterator()) + list(notify_team.iterator())
         if not checks:
             return False
 

@@ -10,6 +10,10 @@
     is still <strong>DOWN</strong>.
     <br />
     Please have a look at it.
+    {% elif check.status == 'nag' and check.high_priority %}
+    The check <strong>{{ check.name_then_code }}</strong>
+    is of HIGH PRIORITY yet it is still <strong>DOWN</strong>.
+    <br />
     {% else %}
     The check <strong>{{ check.name_then_code }}</strong>
     has gone <strong>{{ check.status|upper }}</strong>.
