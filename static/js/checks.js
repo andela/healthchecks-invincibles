@@ -126,8 +126,10 @@ $(function () {
             $("#update-name-form").attr("action", $this.data("url"));
             $("#update-name-input").val($this.data("name"));
             $("#update-tags-input").val($this.data("tags"));
+            $("#update-priority-input").val($this.data("priority"));
             $('#update-name-modal').modal("show");
             $("#update-name-input").focus();
+            console.log($this.data("priority"));
     
             return false;
         });

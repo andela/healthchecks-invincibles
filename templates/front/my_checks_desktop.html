@@ -41,6 +41,7 @@
         <td class="name-cell">
             <div data-name="{{ check.name }}"
                     data-tags="{{ check.tags }}"
+                    data-priority="{{ check.high_priority }}"
                     data-url="{% url 'hc-update-name' check.code %}"
                     class="my-checks-name {% if not check.name %}unnamed{% endif %}">
                 <div>{{ check.name|default:"unnamed" }}</div>
