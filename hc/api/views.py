@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from hc.api import schemas
 from hc.api.decorators import check_api_key, uuid_or_400, validate_json
-from hc.api.models import Check, Ping
+from hc.api.models import Check, Ping, Department
 from hc.lib.badges import check_signature, get_badge_svg
 
 
@@ -63,7 +63,12 @@ def checks(request):
         check = Check(user=request.user)
         check.name = str(request.json.get("name", ""))
         check.tags = str(request.json.get("tags", ""))
-        check.department = str(request.json.get("department", ""))
+        department_id = str(request.json.get("department", ""))
+        try:
+            department_object = Department.objects.get(pk=department_id)
+            check.department = department_object
+        except Exception as e:
+            print (e)
         if "timeout" in request.json:
             check.timeout = td(seconds=request.json["timeout"])
         if "grace" in request.json:
