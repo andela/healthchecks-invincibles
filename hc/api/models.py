@@ -11,7 +11,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from hc.api import transports
-from hc.lib import emails
+from hc.lib import emails, sms
 
 STATUSES = (
     ("up", "Up"),
@@ -27,7 +27,7 @@ DEFAULT_NAG_TIME = td(minutes=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
-                 ("victorops", "VictorOps"))
+                 ("victorops", "VictorOps"), ("phone", "Phone"), ("telegram", "Telegram"))
 
 PO_PRIORITIES = {
     -2: "lowest",
@@ -202,6 +202,9 @@ class Channel(models.Model):
         verify_link = settings.SITE_ROOT + verify_link
         emails.verify_email(self.value, {"verify_link": verify_link})
 
+    def send_verify_sms(self, to):
+        sms.send_confirmation_code(to)
+
     @property
     def transport(self):
         if self.kind == "email":
@@ -220,6 +223,10 @@ class Channel(models.Model):
             return transports.Pushbullet(self)
         elif self.kind == "po":
             return transports.Pushover(self)
+        elif self.kind == "phone":
+            return transports.SMS(self)
+        elif self.kind == "telegram":
+            return transports.Telegram(self)
         else:
             raise NotImplementedError("Unknown channel kind: %s" % self.kind)
 
@@ -227,10 +234,10 @@ class Channel(models.Model):
         # Make 3 attempts--
         for x in range(0, 3):
             error = self.transport.notify(check) or ""
-            if error in ("", "no-op"):
-                break  # Success!
+            if error in ("", "no-op"):  # True
+                break # Success!
 
-        if error != "no-op":
+        if error != "no-op":  # ""
             n = Notification(owner=check, channel=self)
             n.check_status = check.status
             n.error = error

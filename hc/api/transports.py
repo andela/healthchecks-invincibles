@@ -5,7 +5,7 @@ import json
 import requests
 from six.moves.urllib.parse import quote
 
-from hc.lib import emails
+from hc.lib import emails, sms, telegram
 
 
 def tmpl(template_name, **ctx):
@@ -60,6 +60,17 @@ class Email(Transport):
         emails.alert(self.channel.value, ctx)
 
 
+class Telegram(Transport):
+    def notify(self, check):
+
+        ctx = {
+            "check": check,
+            "checks": self.checks(),
+            "now": timezone.now(),
+        }
+        return telegram.alert(self.channel.value, ctx)
+
+
 class HttpTransport(Transport):
 
     def request(self, method, url, **kwargs):
@@ -88,6 +99,19 @@ class HttpTransport(Transport):
 
     def post_form(self, url, data):
         return self.request("post", url, data=data)
+
+
+class SMS(HttpTransport):
+
+    def notify(self, check):
+
+        ctx = {
+            "check": check,
+            "checks": self.checks(),
+            "now": timezone.now()
+        }
+        return sms.alert(self.channel.value, ctx)
+
 
 
 class Webhook(HttpTransport):
