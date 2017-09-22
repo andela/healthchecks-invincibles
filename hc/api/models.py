@@ -27,7 +27,8 @@ DEFAULT_NAG_TIME = td(minutes=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
-                 ("victorops", "VictorOps"), ("phone", "Phone"), ("telegram", "Telegram"))
+                 ("victorops", "VictorOps"), ("phone", "Phone"), ("telegram", "Telegram")),
+                 ("shopify", "Shopify"))
 
 PO_PRIORITIES = {
     -2: "lowest",
@@ -137,7 +138,7 @@ class Check(models.Model):
 
     def assign_all_channels(self):
         if self.user:
-            channels = Channel.objects.filter(user=self.user)
+            channels = Channel.objects.filter(user=self.user).exclude(kind='shopify')
             self.channel_set.add(*channels)
             return True
 
@@ -189,6 +190,10 @@ class Channel(models.Model):
 
     def assign_all_checks(self):
         checks = Check.objects.filter(user=self.user)
+        self.checks.add(*checks)
+
+    def assign_shopify_checks(self, check_code):
+        checks = Check.objects.filter(user=self.user, code=check_code)
         self.checks.add(*checks)
 
     def make_token(self):
