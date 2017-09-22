@@ -17,3 +17,4 @@ static/.DS_Store
 solution.py
 .vscode
 healthchecks-venv/
+.env
