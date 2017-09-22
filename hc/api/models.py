@@ -38,6 +38,13 @@ PO_PRIORITIES = {
 }
 
 
+class Department(models.Model):
+    department_name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.department_name
+
+
 class Check(models.Model):
 
     class Meta:
@@ -59,6 +66,7 @@ class Check(models.Model):
     nag_time = models.DurationField(default=DEFAULT_NAG_TIME)
     next_nag_time = models.DateTimeField(null=True, blank=True)
     often = models.BooleanField(default=False)
+    department = models.ForeignKey(Department, null=True, blank=True, on_delete=models.CASCADE)
 
     def name_then_code(self):
         if self.name:

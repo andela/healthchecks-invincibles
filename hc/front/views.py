@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
+from hc.api.models import Department
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm)
@@ -32,7 +33,7 @@ def pairwise(iterable):
 def my_checks(request):
     q = Check.objects.filter(user=request.team.user).order_by("created")
     all_checks = list(q)
-
+    departments = Department.objects.all()
     counter = Counter()
     if not 'unresolved' in request.path:
         down_tags, grace_tags = set(), set()
@@ -56,9 +57,9 @@ def my_checks(request):
             "tags": counter.most_common(),
             "down_tags": down_tags,
             "grace_tags": grace_tags,
+            "departments": departments,
             "ping_endpoint": settings.PING_ENDPOINT
         }
-
     else:
         unresolved = []
         for check in all_checks:
@@ -70,9 +71,30 @@ def my_checks(request):
             "page": "unresolved",
             "checks": unresolved,
             "now": timezone.now(),
+            "departments": departments,
             "ping_endpoint": settings.PING_ENDPOINT
         }
 
+    return render(request, "front/my_checks.html", ctx)
+
+
+@login_required
+def checks_departments(request):
+    q = Check.objects.filter(user=request.team.user).order_by("created")
+    all_checks = list(q)
+    departments = Department.objects.all()
+    
+    if request.method == "GET":
+        department = request.GET.get('department')
+        all_checks = Check.objects.filter(user=request.team.user, department=department).order_by("created")
+
+    ctx = {
+        "page": "departments",
+        "checks": all_checks,
+        "now": timezone.now(),
+        "departments": departments,
+        "ping_endpoint": settings.PING_ENDPOINT
+    }
     return render(request, "front/my_checks.html", ctx)
 
 
@@ -162,6 +184,12 @@ def update_name(request, code):
     if form.is_valid():
         check.name = form.cleaned_data["name"]
         check.tags = form.cleaned_data["tags"]
+        department_value = form.cleaned_data["department"]
+        try:
+            department = Department.objects.get(pk=department_value)
+            check.department = department
+        except Exception as e:
+            print("error", e)
         check.save()
 
     return redirect("hc-checks")
