@@ -140,7 +140,7 @@
                If there are multiple bots in the group, type
                <strong><code>/start@hc_invincibles_bot</code></strong> instead.
            </p>
-            <p>Enter you telegram username in the space below</p>
+            <p>Enter you telegram username in the space below. Save the integration, and it's done!</p>
             <form method="post" class="form-horizontal" action="{% url 'hc-add-channel' %}">
                 {% csrf_token %}
                 <input type="hidden" name="kind" value="telegram" />
@@ -151,7 +151,7 @@
                             type="text"
                             class="form-control"
                             name="value"
-                            placeholder="telegram username">
+                            placeholder="e.g. lorna">
                     </div>
                 </div>
                 <div class="form-group">
@@ -162,21 +162,7 @@
             </form>
         </div>
     </div>
-
-    <div class="row ai-step">
-        <div class="col-sm-6">
-            <span class="step-no">3</span>
-            <p>Confirm the integration, and it's done!</p>
-        </div>
-        <div class="col-sm-6">
-            <img
-                class="ai-guide-screenshot"
-                alt="Screenshot"
-                src="{% static 'img/integrations/setup_slack_2.png' %}">
-        </div>
-    </div>
     {% endif %}
-
 </div>
 </div>
 
